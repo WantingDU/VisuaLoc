@@ -1,0 +1,37 @@
+{
+  "client": [
+    {
+      "services": {
+        "appinvite_service": {
+          "status": 1
+        }, 
+        "analytics_service": {
+          "status": 0
+        }
+      }, 
+      "oauth_client": [
+        {
+          "client_id": "388789100035-jkq0epqef9onisprs9j9k7nuc6nuuq3v.apps.googleusercontent.com"
+        }
+      ], 
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHVr8ryZB7OM0mTF8FIBSeL-mzzJeXK6Y"
+        }
+      ], 
+      "client_info": {
+        "mobilesdk_app_id": "1:388789100035:ios:3df96045e1744a2138b836", 
+        "android_client_info": {
+          "package_name": "com.dubidu.locationBased"
+        }
+      }
+    }
+  ], 
+  "configuration_version": "1", 
+  "project_info": {
+    "storage_bucket": "shareardubidu.appspot.com", 
+    "project_id": "shareardubidu", 
+    "firebase_url": "https://shareardubidu.firebaseio.com", 
+    "project_number": "388789100035"
+  }
+}
