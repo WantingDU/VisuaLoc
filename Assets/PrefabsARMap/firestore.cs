@@ -149,15 +149,17 @@ public class firestore : MonoBehaviour {
     }
 
     //evaluate by checking current frame
-    public void onSave2()
+    public void onSaveCF()
     {
         if (StaticObject.myARmapName =="Default")
         {
-            StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
+            //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
+            String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
+            StaticObject.myARmapName = "CF " + timeStamp;
             return;
         }
         
-        if (PointCloudParticleExampleVersionDu.CPNumber <= 150)
+        if (PointCloudParticleExampleVersionDu.CPNumber <= CreteriaSetting.CurrentFrame_cre)
         {
             StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
             return;
@@ -173,16 +175,53 @@ public class firestore : MonoBehaviour {
             //UploadCurrentWorldMap();
             saveObject();
             WriteARPoint2DB();
+            PersistenceTest.writeNewTest(StaticObject.myARmapID, StaticObject.myARmapName, Auth.UserSelfId, "Current Frame", PointCloudParticleExampleVersionDu.CPNumber.ToString(), worldMap.pointCloud.Count.ToString(), "Null");
+            loadedMap = worldMap;
         });
+
 
     }
 
+    //evaluate by total number
+    public void onSaveTotal()
+    {
+        if (StaticObject.myARmapName == "Default")
+        {
+            //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
+            String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
+            StaticObject.myARmapName = "To" + timeStamp;
+            return;
+        }
+        WorldMapManager.session.GetCurrentWorldMapAsync(worldMap =>
+        {
+            if (worldMap.pointCloud.Count <= CreteriaSetting.Total_cre)
+            {
+                StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
+                return;
+            }
+            print("begin serializing");
+            var worldMapInBytes = worldMap.SerializeToByteArray();
+            StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
+            GalleryController.onScreenshotMap();
+            StaticObject.debugger.text = "uploading...";
+            //UploadCurrentWorldMap();
+            saveObject();
+            WriteARPoint2DB();
+            PersistenceTest.writeNewTest(StaticObject.myARmapID, StaticObject.myARmapName, Auth.UserSelfId, "Total", PointCloudParticleExampleVersionDu.CPNumber.ToString(), worldMap.pointCloud.Count.ToString(), "Null");
+            loadedMap = worldMap;
+
+        
+        });
+
+    }
     //evaluate by checking plane 
     public void onSavePlane()
     {
         if (StaticObject.myARmapName == "Default")
         {
-            StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
+            //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
+            String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
+            StaticObject.myARmapName = "We " + timeStamp;
             return;
         }
 
@@ -231,7 +270,7 @@ public class firestore : MonoBehaviour {
                 viewPoint = Math.Round(viewPoint, 0);
             }
             GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() + " Plane: " + viewPoint;
-            if (viewPoint <= 400)
+            if (viewPoint <= CreteriaSetting.Weighted_cre)
             {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
                 return;
@@ -243,6 +282,7 @@ public class firestore : MonoBehaviour {
             StaticObject.debugger.text = "uploading...";
             //UploadCurrentWorldMap();
             saveObject();
+            PersistenceTest.writeNewTest(StaticObject.myARmapID, StaticObject.myARmapName, Auth.UserSelfId, "Weighted", PointCloudParticleExampleVersionDu.CPNumber.ToString(), worldMap.pointCloud.Count.ToString(),viewPoint.ToString());
             WriteARPoint2DB();
             loadedMap = worldMap;
 

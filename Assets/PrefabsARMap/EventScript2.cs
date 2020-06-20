@@ -96,11 +96,12 @@ public class EventScript2 : MonoBehaviour
 
         });
     }
+    /*
     public void Go2AR()
     {
         SceneManager.LoadSceneAsync("ARView");
 
-    }
+    }*/
 
     public void OnClickNew()
     {
@@ -129,5 +130,8 @@ public class EventScript2 : MonoBehaviour
         GameObject myInput = GameObject.Find("InputField");
         Destroy(myInput);
     }
-
+    public void goSetting()
+    {
+        SceneManager.LoadSceneAsync("Setting");
+    }
 }

@@ -7,6 +7,7 @@ using Firebase.Unity.Editor;
 using Mapbox.Utils;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using System;
 
 public class CommonVariables : MonoBehaviour
 {
@@ -82,6 +83,10 @@ public static void writeNewPlace2(string guID, string title, string contents, Ve
         double dz = -(prefabLoc.z - location.latitude) * lat2km;
         double dx = -(prefabLoc.x - location.longitude) * lat2km;
         return new Vector3((float)dx, (float)dy, (float)dz);
+    }
+    public static string GetTimestamp(DateTime value)
+    {
+        return value.ToString("yyyyMMddHHmmssffff");
     }
 }
 
