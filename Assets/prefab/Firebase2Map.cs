@@ -25,6 +25,7 @@ public class Firebase2Map : MonoBehaviour
     public  List<GameObject> placesExist = new List<GameObject>();
     public  Dictionary<GameObject,MyPoint> myPointExist = new Dictionary<GameObject,MyPoint>();
     public List<GameObject> MapExist = new List<GameObject>();
+    public static Dictionary<string,string> DictOfARMap; 
     public Dictionary<GameObject, MyMapPoint> myMapExist = new Dictionary<GameObject, MyMapPoint>();
     AbstractMap map;
 
@@ -34,6 +35,7 @@ public class Firebase2Map : MonoBehaviour
         MapPointsRef.ChildAdded -= HandleChildAdded2;
         MapPointsRef.ChildChanged -= HandleChildChanged2;
         MapPointsRef.ChildRemoved -= HandleChildRemoved2;
+        DictOfARMap.Clear();
     }
     public void ChangeSearchRange()
     {
@@ -44,7 +46,7 @@ public class Firebase2Map : MonoBehaviour
 
     public void Start()
     {
-
+        DictOfARMap = new Dictionary<string, string>();
         FindObjectOfType<Slider>().value = SearchRange;
         SearchRange = FindObjectOfType<Slider>().value;
         //prefab = Resources.Load<GameObject>("Sphere");
@@ -286,6 +288,7 @@ public class Firebase2Map : MonoBehaviour
                         point.tag = "ARMapPoint";
                         MapExist.Add(point);
                         myMapExist.Add(point, my_point);
+                        DictOfARMap.Add(guid, placeName);
                     }
                     
                 }
@@ -358,14 +361,15 @@ public class Firebase2Map : MonoBehaviour
             return;
         }
         print("destroy a removed child");
-        if (GameObject.Find(args.Snapshot.Child("placeName").Value.ToString()) != null)
+        if (GameObject.Find(args.Snapshot.Child("guid").Value.ToString()) != null)
         {
-            GameObject changedObject = GameObject.Find(args.Snapshot.Child("placeName").Value.ToString());
+            GameObject changedObject = GameObject.Find(args.Snapshot.Child("guid").Value.ToString());
             print("args previous child name:" + args.PreviousChildName);
 
             Destroy(changedObject);
             myMapExist.Remove(key: changedObject);
             MapExist.Remove(changedObject);
+            DictOfARMap.Remove(args.Snapshot.Child("guid").Value.ToString());
         }
         
     }
@@ -462,6 +466,7 @@ public class Firebase2Map : MonoBehaviour
                             StartCoroutine(firestore.LoadScreenshot(guid + "/ARMapScreenshot.jpg", point));
                             MapExist.Add(point);
                             myMapExist.Add(point, my_point);
+                            DictOfARMap.Add(guid, placeName1);
                         }
                     }
 
@@ -513,7 +518,8 @@ public class Firebase2Map : MonoBehaviour
 
 
                 myMapExist.Add(point, my_point);
-
+                DictOfARMap.Add(guid, placeName1);
+                
 
             }
         },

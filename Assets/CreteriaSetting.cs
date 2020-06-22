@@ -10,26 +10,36 @@ public class CreteriaSetting : MonoBehaviour
     public static int Total_cre=3000;
     public static int Weighted_cre=600;
     InputField CF_input, To_input, We_input;
+    public static CanvasGroup cg;
     // Start is called before the first frame update
     void Start()
     {
+        cg = transform.GetComponent<CanvasGroup>();
         CF_input = GameObject.Find("CF_cre").GetComponent<InputField>();
         To_input = GameObject.Find("To_cre").GetComponent<InputField>();
         We_input = GameObject.Find("We_cre").GetComponent<InputField>();
-        CF_input.placeholder.GetComponent<Text>().text = "Current Frame:" + CurrentFrame_cre.ToString();
+        CF_input.placeholder.GetComponent<Text>().text = "Current Frame :" + CurrentFrame_cre.ToString();
         To_input.placeholder.GetComponent<Text>().text = "Total :" + Total_cre.ToString();
         We_input.placeholder.GetComponent<Text>().text = "Weighted :" + Weighted_cre.ToString();
     }
     public void change_creteria()
     {
-        print(1);
-        CurrentFrame_cre = Int32.Parse(CF_input.text);
-        print(2);
-        Total_cre = Int32.Parse(To_input.text);
-        print(3);
-        Weighted_cre = Int32.Parse(We_input.text);
-        print(4);
-        StaticCoroutine.DoCoroutine(EventScript.Go2ARTask());
-        print(5);
+        if (CF_input.text.Length > 0)
+        {
+            CurrentFrame_cre = Int32.Parse(CF_input.text);
+        }
+        if (To_input.text.Length>0)
+        {
+            Total_cre = Int32.Parse(To_input.text);
+        }
+        if (We_input.text.Length > 0)
+        {
+            Weighted_cre = Int32.Parse(We_input.text);
+        }
+        //StaticCoroutine.DoCoroutine(EventScript.Go2ARTask());
+        cg.alpha = 0;
+        cg.blocksRaycasts = false;
+        StaticObject.myARmapID = StaticObject.getGUID();
+
     }
 }

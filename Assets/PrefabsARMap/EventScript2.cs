@@ -6,12 +6,14 @@ using UnityEngine.UI;
 public class EventScript2 : MonoBehaviour
 {
     GameObject inputFieldPrefab;
+    GameObject settingInt;
 
     CanvasGroup CG;
     public void Awake()
     {
         inputFieldPrefab = Resources.Load<GameObject>("MapNameInput");
-        
+        settingInt = GameObject.Find("CreteriaSettingInterface");
+
     }
     public void Start()
     {
@@ -133,5 +135,11 @@ public class EventScript2 : MonoBehaviour
     public void goSetting()
     {
         SceneManager.LoadSceneAsync("Setting");
+
+    }
+    public void showSetting()
+    {
+        CreteriaSetting.cg.alpha = 1;
+        CreteriaSetting.cg.blocksRaycasts = true;
     }
 }

@@ -155,10 +155,11 @@ public class firestore : MonoBehaviour {
         {
             //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
             String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-            StaticObject.myARmapName = "CF " + timeStamp;
-            return;
+            StaticObject.myARmapName = "CF >=" + CreteriaSetting.CurrentFrame_cre + " (" + timeStamp + ")";
+            //return;
         }
-        
+        float evalu = (float) PointCloudParticleExampleVersionDu.CPNumber/CreteriaSetting.CurrentFrame_cre;
+        ProgressBar.SetProgressValue(evalu);
         if (PointCloudParticleExampleVersionDu.CPNumber <= CreteriaSetting.CurrentFrame_cre)
         {
             StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
@@ -189,11 +190,15 @@ public class firestore : MonoBehaviour {
         {
             //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
             String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-            StaticObject.myARmapName = "To" + timeStamp;
-            return;
+            StaticObject.myARmapName = "To >="+CreteriaSetting.Total_cre+" ("+timeStamp+")";
+            //return;
         }
         WorldMapManager.session.GetCurrentWorldMapAsync(worldMap =>
         {
+            print(worldMap.pointCloud.Count);
+            float evalu = (float) worldMap.pointCloud.Count / CreteriaSetting.Total_cre;
+            print(evalu);
+            ProgressBar.SetProgressValue(evalu);
             if (worldMap.pointCloud.Count <= CreteriaSetting.Total_cre)
             {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
@@ -221,8 +226,8 @@ public class firestore : MonoBehaviour {
         {
             //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
             String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-            StaticObject.myARmapName = "We " + timeStamp;
-            return;
+            StaticObject.myARmapName = "We >= "+CreteriaSetting.Weighted_cre+"("+timeStamp+")";
+            //return;
         }
 
         //get two viewport point on top & buttom of screen 
@@ -249,7 +254,7 @@ public class firestore : MonoBehaviour {
         Vector3 p2 = StaticObject.viewTo3D(point_top);
         Vector3 p3 = StaticObject.viewTo3D(point_center);
         Vector3 pos = Camera.main.transform.position;
-        double viewPoint = 0;
+        float viewPoint = 0;
         WorldMapManager.session.GetCurrentWorldMapAsync(worldMap =>
         {
             foreach (Vector3 v in worldMap.pointCloud.Points)
@@ -260,16 +265,18 @@ public class firestore : MonoBehaviour {
                 float dist = Vector3.Distance(pos, v);
                 if (dist <= 3 && dot > 0 && viewPos.x >= 0 && viewPos.x <= 1 && viewPos.y >= 0 && viewPos.y <= 1)
                 {
-                    viewPoint+=0.3;
+                    viewPoint+=0.3f;
                     if (StaticObject.IsOnPlane(v,p1)||StaticObject.IsOnPlane(v,p2)|| StaticObject.IsOnPlane(v, p3))//check if point in view port is also on detected plane in view port
                     {
-                        viewPoint+=1;
+                        viewPoint+=1f;
                     }
 
                 }
-                viewPoint = Math.Round(viewPoint, 0);
+                viewPoint =(float) Math.Round(viewPoint, 0);
             }
             GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() + " Plane: " + viewPoint;
+            float evalu = viewPoint/ CreteriaSetting.Weighted_cre;
+            ProgressBar.SetProgressValue(evalu);
             if (viewPoint <= CreteriaSetting.Weighted_cre)
             {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";

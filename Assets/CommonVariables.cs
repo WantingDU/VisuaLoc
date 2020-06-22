@@ -25,7 +25,9 @@ public class CommonVariables : MonoBehaviour
     private void Start()
     {
         Input.location.Start();
+
         InvokeRepeating("UpdateGPS2", 0f, 1f);
+
     }
     public static void UpdateGPS2()
     {
@@ -86,7 +88,7 @@ public static void writeNewPlace2(string guID, string title, string contents, Ve
     }
     public static string GetTimestamp(DateTime value)
     {
-        return value.ToString("yyyyMMddHHmmssffff");
+        return value.ToString("MM/dd/HH/mm");
     }
 }
 

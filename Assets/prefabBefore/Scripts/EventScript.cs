@@ -74,6 +74,7 @@ public class EventScript : MonoBehaviour
             canvasGroup.alpha = canvasGroup.alpha = 0f; //this makes everything transparent
             canvasGroup.blocksRaycasts = false; //this prevents the UI element to receive input events
         }
+        ScrollMapList.initList(Firebase2Map.DictOfARMap);
     }
 
 }
