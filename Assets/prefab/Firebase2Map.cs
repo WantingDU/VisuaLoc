@@ -479,7 +479,11 @@ public class Firebase2Map : MonoBehaviour
     {
         Text output= GameObject.Find("SearchResult").GetComponent<Text>(); 
         string MapID = GameObject.Find("SearchMap").GetComponent<InputField>().text;
-        Debug.Log("found mapid text" + MapID);
+        if (MapID == null)
+        {
+            output.text = "ID is invalid, please check again";
+            return;
+        }
         Firebase2Map.MapPointsRef.Child(MapID).GetValueAsync().ContinueWith(task =>
         {
             if (task.IsFaulted)

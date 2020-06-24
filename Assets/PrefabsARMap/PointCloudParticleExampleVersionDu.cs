@@ -38,7 +38,25 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
                 break;
             case ARTrackingState.ARTrackingStateNormal:
                 cloudPNumber.color = Color.green;
+
+                //Stop timer when tracking succesful 
+                if (firestore.FilesAreReady())
+                {
+                    firestore.sw.Stop();
+                    PersistenceTest.writeNewRebuild(StaticObject.myARmapID,"1 ",firestore.sw.ElapsedMilliseconds.ToString());
+                    firestore.sw.Reset();
+                    firestore.FilesLoaded = 0;
+                }
                 break;
+        }
+        if (firestore.sw != null)
+        {
+            if(firestore.sw.ElapsedMilliseconds >= 20000)
+            {
+                firestore.sw.Stop();
+                PersistenceTest.writeNewRebuild(StaticObject.myARmapID, "0", "timeout,>=20s");
+                firestore.sw.Reset();
+            }
         }
            
         //camera.trackingReason;

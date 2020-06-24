@@ -9,7 +9,7 @@ using Mapbox.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.iOS;
-
+using System.Diagnostics;
 
 public class firestore : MonoBehaviour {
 
@@ -28,6 +28,7 @@ public class firestore : MonoBehaviour {
     public ParticleSystem pointCloudParticlePrefab;
     private ParticleSystem totalPS;
     public static int FilesLoaded= 0;
+    public static Stopwatch sw=new Stopwatch();
 
     bool view = true;
     private void OnDestroy()
@@ -41,7 +42,7 @@ public class firestore : MonoBehaviour {
         UnityARSessionNativeInterface.ARSessionShouldAttemptRelocalization = false;
         
     }
-    void Start () {
+    void Start() {
         checkFile = 0;
         FilesLoaded = 0;
         Prefab = Resources.Load<GameObject>("InfoPanelOut");
@@ -324,7 +325,7 @@ public class firestore : MonoBehaviour {
               .ContinueWith((Task<StorageMetadata> task) => {
                   if (task.IsFaulted || task.IsCanceled)
                   {
-                      Debug.Log(task.Exception.ToString());
+                      UnityEngine.Debug.Log(task.Exception.ToString());
                       StaticObject.debugger.text = "error while write"+pathName+" in db";
                   
                    }
@@ -337,7 +338,7 @@ public class firestore : MonoBehaviour {
                       if (!StaticObject.listOfFiles.Contains(pathName))
                           StaticObject.listOfFiles.Add(pathName);
                       StaticObject.debugger.text = "Finished Upload" + pathName;
-                      Debug.Log("Finished uploading "+pathName);
+                      UnityEngine.Debug.Log("Finished uploading "+pathName);
                       firestore.checkFile++;
                       if (firestore.checkFile == 4)
                       {
@@ -371,8 +372,8 @@ public class firestore : MonoBehaviour {
         {
             if (task.IsFaulted || task.IsCanceled)
             {
-                Debug.Log(task.Exception.ToString());
-                Debug.Log("trouve pas de "+Mypath);
+                UnityEngine.Debug.Log(task.Exception.ToString());
+                UnityEngine.Debug.Log("trouve pas de "+Mypath);
                 StaticObject.debugger.text = task.Exception.ToString() + "length: " + task.Result.Length;
             }
             else
@@ -396,8 +397,8 @@ public class firestore : MonoBehaviour {
         {
             if (task.IsFaulted || task.IsCanceled)
             {
-                Debug.Log("error while read screenshot"+task.Exception.ToString());
-                Debug.Log("trouve pas de " + Mypath);
+                UnityEngine.Debug.Log("error while read screenshot"+task.Exception.ToString());
+                UnityEngine.Debug.Log("trouve pas de " + Mypath);
             }
             else
             {
@@ -426,14 +427,14 @@ public class firestore : MonoBehaviour {
         reference2Read.GetBytesAsync(maxAllowedSize).ContinueWith((Task<byte[]> task) => {
             if (task.IsFaulted || task.IsCanceled)
             {
-                Debug.Log(task.Exception.ToString());
+                UnityEngine.Debug.Log(task.Exception.ToString());
                 StaticObject.debugger.text = task.Exception.ToString()+ "length: " + task.Result.Length;
             }
             else
             {
                 byte[] fileContents = task.Result;
                 StaticObject.debugger.text = Mypath+"is ready";
-                print(Mypath + "is ready in Readfile");
+                print(Mypath + "is ready");
                 switch (Mypath)
                 {
                     case "WorldData":
@@ -498,8 +499,10 @@ public class firestore : MonoBehaviour {
     {
         print("Loading WorldMap!");
         ARWorldMap worldMap = ARWorldMap.SerializeFromByteArray(worldMapInBytes);
+        FilesLoaded++;
+        print("FilesLoaded++ " + FilesLoaded);
         print("finished serialize");
-        Debug.LogFormat("Map loaded. Center: {0} Extent: {1}", worldMap.center, worldMap.extent);
+        UnityEngine.Debug.LogFormat("Map loaded. Center: {0} Extent: {1}", worldMap.center, worldMap.extent);
         UnityARSessionNativeInterface.ARSessionShouldAttemptRelocalization = true;
         var config = m_ARCameraManager.sessionConfiguration;
         config.worldMap = worldMap;
@@ -510,10 +513,9 @@ public class firestore : MonoBehaviour {
         //StaticObject.debugger.text = "ARWorldMap is rebuilt";
         print("ARWorldMap is rebuilt");
         loadedMap = worldMap;
-        FilesLoaded++;
-        print("FilesLoaded++ "+ FilesLoaded);
+
     }
-    private bool FilesAreReady()
+    public static bool FilesAreReady()
     {
         return (FilesLoaded >= 3);
 
@@ -523,7 +525,11 @@ public class firestore : MonoBehaviour {
         print("reinstatiateGo 1");
         yield return new WaitUntil(FilesAreReady);
         print("reinstatiateGo 2");
-        FilesLoaded = 0;
+
+        //timer start after all files are ready
+        sw.Reset();
+        sw.Start();
+
         print("reInstantiateGo start PrecisARList count="+dict.Count);
         PrecisARList = new List<GameObject>(dict.Count);
         foreach (KeyValuePair<List<float>, List<string>> Go in dict)
@@ -578,19 +584,19 @@ public class firestore : MonoBehaviour {
       StaticCoroutine.DoCoroutine(Database2AR.onRemoveMap());
       foreach(string path in StaticObject.listOfFiles)
         {
-            //Debug.Log(path);
+            //UnityEngine.Debug.Log(path);
             if (path != StaticObject.myARmapID + "/FileList")
             {
                 StaticObject.Bunkyou_ref.Child(path).DeleteAsync().ContinueWith(task => {
                     if (task.IsCompleted)
                     {
-                        Debug.Log("File (" + path + ") deleted successfully.");
+                        UnityEngine.Debug.Log("File (" + path + ") deleted successfully.");
                         StaticObject.debugger.text = path + "File deleted successfully.";
                     }
                     else
                     {
-                        Debug.Log(path + "fail to delete");
-                        Debug.Log(task.Exception.ToString());
+                        UnityEngine.Debug.Log(path + "fail to delete");
+                        UnityEngine.Debug.Log(task.Exception.ToString());
                         StaticObject.debugger.text = "File deleted fail";
                     }
                 });
@@ -599,13 +605,13 @@ public class firestore : MonoBehaviour {
         StaticObject.Bunkyou_ref.Child(StaticObject.myARmapID + "/FileList").DeleteAsync().ContinueWith(task => {
             if (task.IsCompleted)
             {
-                Debug.Log("File (" + StaticObject.myARmapID + "/FileList" + ") deleted successfully.");
+                UnityEngine.Debug.Log("File (" + StaticObject.myARmapID + "/FileList" + ") deleted successfully.");
                 StaticObject.debugger.text = StaticObject.myARmapID + "/FileList" + "File deleted successfully.";
             }
             else
             {
-                Debug.Log(StaticObject.myARmapID + "/FileList" + "fail to delete");
-                Debug.Log(task.Exception.ToString());
+                UnityEngine.Debug.Log(StaticObject.myARmapID + "/FileList" + "fail to delete");
+                UnityEngine.Debug.Log(task.Exception.ToString());
                 StaticObject.debugger.text = "File deleted fail";
             }
         });
@@ -614,13 +620,13 @@ public class firestore : MonoBehaviour {
             StaticObject.Bunkyou_ref.Child("Images/"+Go.Value[3]+"jpg").DeleteAsync().ContinueWith(task => {
                 if (task.IsCompleted)
                 {
-                    Debug.Log("File (" + Go.Value[3] + "jpg" + ") deleted successfully.");
+                    UnityEngine.Debug.Log("File (" + Go.Value[3] + "jpg" + ") deleted successfully.");
                     StaticObject.debugger.text = Go.Value[3] + "jpg" + "File deleted successfully.";
                 }
                 else
                 {
-                    Debug.Log(Go.Value[3] + "jpg" + "fail to delete");
-                    Debug.Log(task.Exception.ToString());
+                    UnityEngine.Debug.Log(Go.Value[3] + "jpg" + "fail to delete");
+                    UnityEngine.Debug.Log(task.Exception.ToString());
                     StaticObject.debugger.text = "File deleted fail";
                 }
             });
