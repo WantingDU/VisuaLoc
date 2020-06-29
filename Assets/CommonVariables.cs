@@ -88,7 +88,11 @@ public static void writeNewPlace2(string guID, string title, string contents, Ve
     }
     public static string GetTimestamp(DateTime value)
     {
-        return value.ToString("MM/dd/HH/mm");
+        return value.ToString("MM-dd HH:mm:ss");
+    }
+    public static string GetTimestampPrecise(DateTime value)
+    {
+        return value.ToString("MM/dd/HH/mm/ss/fff");// '/'causes children in database
     }
 }
 

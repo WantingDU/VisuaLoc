@@ -22,6 +22,7 @@ public class StaticObject : MonoBehaviour
     public static List<string> listOfFiles;
     public static float tempSearchRange;
     public static int currentOrder;
+    public static bool startCliked;
     private void OnDestroy()
     {
         addedGO = null;
@@ -131,6 +132,21 @@ public class StaticObject : MonoBehaviour
 
         }
         return Vector3.zero;
+    }
+
+    public void TimerStarter()
+    {
+        firestore.sw.Start();
+        startCliked = true;
+        GameObject.Find("StartTracking").GetComponent<CanvasGroup>().alpha = 0;
+        GameObject.Find("StartTracking").GetComponent<CanvasGroup>().blocksRaycasts = false;
+        startCliked = false;
+    }
+
+    public static bool ClickedStart()
+    {
+        return startCliked;
+
     }
 }
 

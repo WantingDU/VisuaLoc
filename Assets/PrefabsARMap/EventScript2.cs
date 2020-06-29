@@ -142,4 +142,5 @@ public class EventScript2 : MonoBehaviour
         CreteriaSetting.cg.alpha = 1;
         CreteriaSetting.cg.blocksRaycasts = true;
     }
+
 }

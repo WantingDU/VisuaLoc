@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,16 +36,18 @@ public class RebuildResult
     public string guid;
     public string succes;
     public string time;
+    public string timeStamp;
 
     public RebuildResult()
     {
     }
 
-    public RebuildResult(string guid,string succes, string time)
+    public RebuildResult(string guid,string succes, string time,string timeStamp)
     {
         this.guid = guid;
         this.succes = succes;
         this.time = time;
+        this.timeStamp = timeStamp;
     }
 }
 public class PersistenceTest : MonoBehaviour
@@ -57,12 +60,12 @@ public class PersistenceTest : MonoBehaviour
         CommonVariables.reference.Child("SaveResults").Child(guid).SetRawJsonValueAsync(json);
 
     }
-    public static void writeNewRebuild(string guid, string succes, string time)
+    public static void writeNewRebuild(string guid, string succes, string time,string timeStamp)
     {
 
-        RebuildResult new_result = new RebuildResult(guid,succes,time);
+        RebuildResult new_result = new RebuildResult(guid,succes,time,timeStamp);
         string json = JsonUtility.ToJson(new_result);
-        CommonVariables.reference.Child("RebuildResults").Child(guid).SetRawJsonValueAsync(json);
+        CommonVariables.reference.Child("RebuildResults").Child(guid).Child(timeStamp).SetRawJsonValueAsync(json);
 
     }
 

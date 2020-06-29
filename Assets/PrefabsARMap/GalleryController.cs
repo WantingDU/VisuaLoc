@@ -5,6 +5,11 @@ using UnityEngine.Video;
 
 public class GalleryController : MonoBehaviour
 {
+    public static CanvasGroup UICG;
+    private void Awake()
+    {
+        UICG = GameObject.Find("Canvas").GetComponent<CanvasGroup>();
+    }
     
     public void onClickPanelMedia()
     {
@@ -55,6 +60,8 @@ public class GalleryController : MonoBehaviour
 	}
     private static IEnumerator TakeScreenshot()
     {
+        UICG.alpha = 0;
+        UICG.blocksRaycasts = false;
         yield return new WaitForEndOfFrame();
 
         Texture2D ss = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
@@ -67,10 +74,13 @@ public class GalleryController : MonoBehaviour
         //Debug.Log("Permission result: " + NativeGallery.SaveImageToGallery(ss, "GalleryTest", "Image.png"));
         // To avoid memory leaks
         Destroy(ss);
-       
+        UICG.alpha = 1;
+        UICG.blocksRaycasts = true;
     }
     private IEnumerator TakeScreenshotAndSave()
 	{
+        UICG.alpha = 0;
+        UICG.blocksRaycasts = false;
 		yield return new WaitForEndOfFrame();
 
 		Texture2D ss = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
@@ -78,12 +88,14 @@ public class GalleryController : MonoBehaviour
 		ss.Apply();
 
 		// Save the screenshot to Gallery/Photos
-		Debug.Log("Permission result: " + NativeGallery.SaveImageToGallery(ss, "GalleryTest", "Image.png"));
-
+		Debug.Log("Permission result: " + NativeGallery.SaveImageToGallery(ss, "VisuaLoc", StaticObject.getGUID() + ".png"));
+        
 		// To avoid memory leaks
 		Destroy(ss);
-	}
-
+        UICG.alpha = 1;
+        UICG.blocksRaycasts = true;
+    }
+    
     private void PickImageForPanel(int maxSize)
     {
         StaticObject.photoAdded = true;

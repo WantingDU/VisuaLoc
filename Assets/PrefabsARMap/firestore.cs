@@ -29,7 +29,7 @@ public class firestore : MonoBehaviour {
     private ParticleSystem totalPS;
     public static int FilesLoaded= 0;
     public static Stopwatch sw=new Stopwatch();
-
+    GameObject Timer;
     bool view = true;
     private void OnDestroy()
     {
@@ -39,10 +39,29 @@ public class firestore : MonoBehaviour {
         FilesLoaded = 0;
         print("ondestroy");
         loadedMap = null;
+        sw.Reset();
         UnityARSessionNativeInterface.ARSessionShouldAttemptRelocalization = false;
         
     }
+    private void Awake()
+    {
+        Timer = GameObject.Find("Timer");
+    }
+    private void Update()
+    {
+        if (FilesLoaded >= 3)
+        {
+            Timer.GetComponent<Text>().color = Color.blue;
+        }
+        else
+        {
+            Timer.GetComponent<Text>().color = Color.white;
+        }
+        Timer.GetComponent<Text>().text = sw.ElapsedMilliseconds.ToString();
+
+    }
     void Start() {
+        
         checkFile = 0;
         FilesLoaded = 0;
         Prefab = Resources.Load<GameObject>("InfoPanelOut");
@@ -57,6 +76,7 @@ public class firestore : MonoBehaviour {
         PrecisARList = new List<GameObject>();
         //unityARAnchorManager = new UnityARAnchorManager();
         print("start in firestore is finished");
+        sw.Reset();
         onLoad();
 
     }
@@ -138,7 +158,6 @@ public class firestore : MonoBehaviour {
             var worldMapInBytes = worldMap.SerializeToByteArray();
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
             GalleryController.onScreenshotMap();
-            StaticObject.debugger.text = "uploading...";
             //UploadCurrentWorldMap();
             saveObject();
             WriteARPoint2DB();
@@ -152,13 +171,15 @@ public class firestore : MonoBehaviour {
     //evaluate by checking current frame
     public void onSaveCF()
     {
-        if (StaticObject.myARmapName =="Default")
+        /*if (StaticObject.myARmapName =="Default")
         {
             //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
             String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
             StaticObject.myARmapName = "CF >=" + CreteriaSetting.CurrentFrame_cre + " (" + timeStamp + ")";
             //return;
-        }
+        }*/
+        string timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
+        StaticObject.myARmapName = "CF >=" + CreteriaSetting.CurrentFrame_cre + " (" + timeStamp + ")";
         float evalu = (float) PointCloudParticleExampleVersionDu.CPNumber/CreteriaSetting.CurrentFrame_cre;
         ProgressBar.SetProgressValue(evalu);
         if (PointCloudParticleExampleVersionDu.CPNumber <= CreteriaSetting.CurrentFrame_cre)
@@ -173,7 +194,6 @@ public class firestore : MonoBehaviour {
             var worldMapInBytes = worldMap.SerializeToByteArray();
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
             GalleryController.onScreenshotMap();
-            StaticObject.debugger.text = "uploading...";
             //UploadCurrentWorldMap();
             saveObject();
             WriteARPoint2DB();
@@ -186,14 +206,16 @@ public class firestore : MonoBehaviour {
 
     //evaluate by total number
     public void onSaveTotal()
-    {
+    {/*
         if (StaticObject.myARmapName == "Default")
         {
             //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
             String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
             StaticObject.myARmapName = "To >="+CreteriaSetting.Total_cre+" ("+timeStamp+")";
             //return;
-        }
+        }*/
+        String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
+        StaticObject.myARmapName = "To >=" + CreteriaSetting.Total_cre + " (" + timeStamp + ")";
         WorldMapManager.session.GetCurrentWorldMapAsync(worldMap =>
         {
             print(worldMap.pointCloud.Count);
@@ -209,7 +231,6 @@ public class firestore : MonoBehaviour {
             var worldMapInBytes = worldMap.SerializeToByteArray();
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
             GalleryController.onScreenshotMap();
-            StaticObject.debugger.text = "uploading...";
             //UploadCurrentWorldMap();
             saveObject();
             WriteARPoint2DB();
@@ -223,14 +244,16 @@ public class firestore : MonoBehaviour {
     //evaluate by checking plane 
     public void onSavePlane()
     {
+        /* comment for research test
         if (StaticObject.myARmapName == "Default")
         {
             //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
             String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
             StaticObject.myARmapName = "We >= "+CreteriaSetting.Weighted_cre+"("+timeStamp+")";
             //return;
-        }
-
+        }*/
+        String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
+        StaticObject.myARmapName = "We >= " + CreteriaSetting.Weighted_cre + "(" + timeStamp + ")";
         //get two viewport point on top & buttom of screen 
         var screenPosition_buttom = Camera.main.ScreenToViewportPoint(new Vector3(Screen.width / 2.0f, Screen.height / 4.0f, 100.0f));
         var screenPosition_top = Camera.main.ScreenToViewportPoint(new Vector3(Screen.width / 2.0f, 3*Screen.height / 4.0f, 100.0f));
@@ -287,8 +310,6 @@ public class firestore : MonoBehaviour {
             var worldMapInBytes = worldMap.SerializeToByteArray();
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
             GalleryController.onScreenshotMap();
-            StaticObject.debugger.text = "uploading...";
-            //UploadCurrentWorldMap();
             saveObject();
             PersistenceTest.writeNewTest(StaticObject.myARmapID, StaticObject.myARmapName, Auth.UserSelfId, "Weighted", PointCloudParticleExampleVersionDu.CPNumber.ToString(), worldMap.pointCloud.Count.ToString(),viewPoint.ToString());
             WriteARPoint2DB();
@@ -337,9 +358,10 @@ public class firestore : MonoBehaviour {
                       //string download_url = StaticObject.Bunkyou_ref.GetDownloadUrlAsync().ToString();
                       if (!StaticObject.listOfFiles.Contains(pathName))
                           StaticObject.listOfFiles.Add(pathName);
-                      StaticObject.debugger.text = "Finished Upload" + pathName;
+                      //StaticObject.debugger.text = "Finished Upload" + pathName;
                       UnityEngine.Debug.Log("Finished uploading "+pathName);
                       firestore.checkFile++;
+                      StaticObject.debugger.text = "Saving...:"+checkFile.ToString() + "/ 4";
                       if (firestore.checkFile == 4)
                       {
                           StaticObject.debugger.text = "Save succesfully";
@@ -365,7 +387,6 @@ public class firestore : MonoBehaviour {
         int width= myGO.transform.GetComponentInChildren<RawImage>().texture.width;
         int height = myGO.transform.GetComponentInChildren<RawImage>().texture.height;
         print("downloading "+Mypath);
-        StaticObject.debugger.text = "Downloading...";
         const long maxAllowedSize = 100 * 1024 * 1024;
         StorageReference reference2Read = StaticObject.Bunkyou_ref.Child("Images").Child(Mypath);
         reference2Read.GetBytesAsync(maxAllowedSize).ContinueWith((Task<byte[]> task) =>
@@ -433,7 +454,7 @@ public class firestore : MonoBehaviour {
             else
             {
                 byte[] fileContents = task.Result;
-                StaticObject.debugger.text = Mypath+"is ready";
+                //StaticObject.debugger.text = Mypath+"is ready";
                 print(Mypath + "is ready");
                 switch (Mypath)
                 {
@@ -446,11 +467,13 @@ public class firestore : MonoBehaviour {
                         print("objectinfo found");
                         print("StaticObject.addedGO"+StaticObject.addedGO.Count);
                         FilesLoaded++;
+                        StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
                         StartCoroutine(reInstantiateGo(StaticObject.addedGO));
                         break;
                     case "FileList":
                         StaticObject.listOfFiles = byte2List(fileContents);
                         FilesLoaded++;
+                        StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
                         print("FileList found");
                         break;
 
@@ -500,6 +523,7 @@ public class firestore : MonoBehaviour {
         print("Loading WorldMap!");
         ARWorldMap worldMap = ARWorldMap.SerializeFromByteArray(worldMapInBytes);
         FilesLoaded++;
+        StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
         print("FilesLoaded++ " + FilesLoaded);
         print("finished serialize");
         UnityEngine.Debug.LogFormat("Map loaded. Center: {0} Extent: {1}", worldMap.center, worldMap.extent);
@@ -510,8 +534,6 @@ public class firestore : MonoBehaviour {
         //StaticObject.debugger.text = "Restarting session with worldMap";
         print("Restarting session with worldMap");
         WorldMapManager.session.RunWithConfigAndOptions(config, runOption);//!!!!!!!!!!!!!这一部分会引起crash
-        //StaticObject.debugger.text = "ARWorldMap is rebuilt";
-        print("ARWorldMap is rebuilt");
         loadedMap = worldMap;
 
     }
@@ -520,15 +542,15 @@ public class firestore : MonoBehaviour {
         return (FilesLoaded >= 3);
 
     }
+
     public IEnumerator reInstantiateGo(Dictionary<List<float>, List<string>> dict)
     {
-        print("reinstatiateGo 1");
         yield return new WaitUntil(FilesAreReady);
-        print("reinstatiateGo 2");
-
-        //timer start after all files are ready
-        sw.Reset();
-        sw.Start();
+        //show start button for timer after files are ready
+        GameObject.Find("StartTracking").GetComponent<CanvasGroup>().alpha = 1;
+        GameObject.Find("StartTracking").GetComponent<CanvasGroup>().blocksRaycasts = true;
+        //start rebuild after startTracking is pressed
+        yield return new WaitUntil(StaticObject.ClickedStart);
 
         print("reInstantiateGo start PrecisARList count="+dict.Count);
         PrecisARList = new List<GameObject>(dict.Count);

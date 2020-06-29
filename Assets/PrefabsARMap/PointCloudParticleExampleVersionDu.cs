@@ -43,8 +43,8 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
                 if (firestore.FilesAreReady())
                 {
                     firestore.sw.Stop();
-                    PersistenceTest.writeNewRebuild(StaticObject.myARmapID,"1 ",firestore.sw.ElapsedMilliseconds.ToString());
-                    firestore.sw.Reset();
+                    PersistenceTest.writeNewRebuild(StaticObject.myARmapID,"1 ",firestore.sw.ElapsedMilliseconds.ToString(), CommonVariables.GetTimestamp(System.DateTime.Now));
+                    //firestore.sw.Reset();
                     firestore.FilesLoaded = 0;
                 }
                 break;
@@ -54,8 +54,8 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
             if(firestore.sw.ElapsedMilliseconds >= 20000)
             {
                 firestore.sw.Stop();
-                PersistenceTest.writeNewRebuild(StaticObject.myARmapID, "0", "timeout,>=20s");
-                firestore.sw.Reset();
+                PersistenceTest.writeNewRebuild(StaticObject.myARmapID, "0", "timeout,>=20s",CommonVariables.GetTimestamp(System.DateTime.Now));
+                //firestore.sw.Reset();
             }
         }
            
