@@ -40,12 +40,13 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
                 cloudPNumber.color = Color.green;
 
                 //Stop timer when tracking succesful 
-                if (firestore.FilesAreReady())
+                if (firestore.AllFilesReady())
                 {
                     firestore.sw.Stop();
                     PersistenceTest.writeNewRebuild(StaticObject.myARmapID,"1 ",firestore.sw.ElapsedMilliseconds.ToString(), CommonVariables.GetTimestamp(System.DateTime.Now));
                     //firestore.sw.Reset();
                     firestore.FilesLoaded = 0;
+                    StaticObject.isTracked = true;
                 }
                 break;
         }
@@ -55,7 +56,8 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
             {
                 firestore.sw.Stop();
                 PersistenceTest.writeNewRebuild(StaticObject.myARmapID, "0", "timeout,>=20s",CommonVariables.GetTimestamp(System.DateTime.Now));
-                //firestore.sw.Reset();
+                firestore.sw.Reset();
+                firestore.FilesLoaded = 0;
             }
         }
            

@@ -23,6 +23,7 @@ public class StaticObject : MonoBehaviour
     public static float tempSearchRange;
     public static int currentOrder;
     public static bool startCliked;
+    public static bool isTracked;
     private void OnDestroy()
     {
         addedGO = null;
@@ -32,6 +33,8 @@ public class StaticObject : MonoBehaviour
         photoAdded = false;
         listOfFiles = null;
         currentOrder = 0;
+        isTracked = false;
+        startCliked = false;
     }
     public void Awake()
     {
@@ -140,13 +143,18 @@ public class StaticObject : MonoBehaviour
         startCliked = true;
         GameObject.Find("StartTracking").GetComponent<CanvasGroup>().alpha = 0;
         GameObject.Find("StartTracking").GetComponent<CanvasGroup>().blocksRaycasts = false;
-        startCliked = false;
+
     }
 
     public static bool ClickedStart()
     {
         return startCliked;
 
+    }
+
+    public static bool ARWorldMapTracked()
+    {
+        return isTracked;
     }
 }
 

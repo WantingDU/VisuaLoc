@@ -3994,7 +3994,7 @@ GameObject:
   - component: {fileID: 1164068327}
   - component: {fileID: 1164068328}
   m_Layer: 5
-  m_Name: CreteriaSettingInterface
+  m_Name: CriteriaSettingInterface
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4614,7 +4614,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 95381049}
-        m_MethodName: delete
+        m_MethodName: deleteLocalMap
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6370,7 +6370,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1164068327}
-        m_MethodName: change_creteria
+        m_MethodName: change_criteria
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6805,7 +6805,7 @@ GameObject:
   - component: {fileID: 8349312745973579937}
   - component: {fileID: 8349312745973579966}
   m_Layer: 5
-  m_Name: To_cre
+  m_Name: To_cri
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6909,7 +6909,7 @@ GameObject:
   - component: {fileID: 8349312745985737171}
   - component: {fileID: 8349312745985737168}
   m_Layer: 5
-  m_Name: CF_cre
+  m_Name: CF_cri
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7165,7 +7165,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Creteria
+  m_Text: Criteria
 --- !u!224 &8349312746274005315
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7565,7 +7565,7 @@ GameObject:
   - component: {fileID: 8349312747089286275}
   - component: {fileID: 8349312747089286272}
   m_Layer: 5
-  m_Name: We_cre
+  m_Name: We_cri
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

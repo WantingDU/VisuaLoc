@@ -242,7 +242,7 @@ public class Database2AR : MonoBehaviour
                             GPSdataScript.height = coordi1.y;
                             GPSdataScript.GPSInfo = true;
 
-                            print("just added:" + PanelExist[i].name);
+                            //print("just added:" + PanelExist[i].name);
                             i++;
                         }
                     }
@@ -290,4 +290,5 @@ public class Database2AR : MonoBehaviour
         }
         
     }
+
     }

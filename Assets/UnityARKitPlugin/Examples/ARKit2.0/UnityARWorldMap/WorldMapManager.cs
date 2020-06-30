@@ -47,7 +47,7 @@ public class WorldMapManager : MonoBehaviour
         get { return Path.Combine(Application.persistentDataPath, "myFirstWorldMap.worldmap"); }
     }
 
-    void OnWorldMap(ARWorldMap worldMap)
+    void OnWorldMap(ARWorldMap worldMap) 
     {
         if (worldMap != null)
         {
@@ -59,6 +59,18 @@ public class WorldMapManager : MonoBehaviour
     public void Save()
     {
         session.GetCurrentWorldMapAsync(OnWorldMap);
+    }
+    void MyOnWorldMap(ARWorldMap worldMap)
+    {
+        if (worldMap != null)
+        {
+            worldMap.Save(Path.Combine(Application.persistentDataPath,StaticObject.myARmapID));
+            Debug.LogFormat("ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+        }
+    }
+    public void MySave()
+    {
+        session.GetCurrentWorldMapAsync(MyOnWorldMap);
     }
 
     public void Load()

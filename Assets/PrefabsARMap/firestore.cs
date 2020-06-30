@@ -40,6 +40,7 @@ public class firestore : MonoBehaviour {
         print("ondestroy");
         loadedMap = null;
         sw.Reset();
+        
         UnityARSessionNativeInterface.ARSessionShouldAttemptRelocalization = false;
         
     }
@@ -49,6 +50,8 @@ public class firestore : MonoBehaviour {
     }
     private void Update()
     {
+
+        //GameObject.Find("CPTotal").GetComponent<Text>().text = StaticObject.ARWorldMapTracked().ToString();
         if (FilesLoaded >= 3)
         {
             Timer.GetComponent<Text>().color = Color.blue;
@@ -57,7 +60,12 @@ public class firestore : MonoBehaviour {
         {
             Timer.GetComponent<Text>().color = Color.white;
         }
-        Timer.GetComponent<Text>().text = sw.ElapsedMilliseconds.ToString();
+        if (sw.ElapsedMilliseconds > 0)
+        {
+            Timer.GetComponent<Text>().text = sw.ElapsedMilliseconds.ToString();
+        }
+        
+       
 
     }
     void Start() {
@@ -179,10 +187,10 @@ public class firestore : MonoBehaviour {
             //return;
         }*/
         string timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-        StaticObject.myARmapName = "CF >=" + CreteriaSetting.CurrentFrame_cre + " (" + timeStamp + ")";
-        float evalu = (float) PointCloudParticleExampleVersionDu.CPNumber/CreteriaSetting.CurrentFrame_cre;
+        StaticObject.myARmapName = "CF >=" + CreteriaSetting.CurrentFrame_cri + " (" + timeStamp + ")";
+        float evalu = (float) PointCloudParticleExampleVersionDu.CPNumber/CreteriaSetting.CurrentFrame_cri;
         ProgressBar.SetProgressValue(evalu);
-        if (PointCloudParticleExampleVersionDu.CPNumber <= CreteriaSetting.CurrentFrame_cre)
+        if (PointCloudParticleExampleVersionDu.CPNumber <= CreteriaSetting.CurrentFrame_cri)
         {
             StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
             return;
@@ -191,6 +199,7 @@ public class firestore : MonoBehaviour {
         WorldMapManager.session.GetCurrentWorldMapAsync (worldMap =>
         {
             print("begin serializing");
+            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString();
             var worldMapInBytes = worldMap.SerializeToByteArray();
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
             GalleryController.onScreenshotMap();
@@ -215,18 +224,19 @@ public class firestore : MonoBehaviour {
             //return;
         }*/
         String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-        StaticObject.myARmapName = "To >=" + CreteriaSetting.Total_cre + " (" + timeStamp + ")";
+        StaticObject.myARmapName = "To >=" + CreteriaSetting.Total_cri + " (" + timeStamp + ")";
         WorldMapManager.session.GetCurrentWorldMapAsync(worldMap =>
         {
             print(worldMap.pointCloud.Count);
-            float evalu = (float) worldMap.pointCloud.Count / CreteriaSetting.Total_cre;
+            float evalu = (float) worldMap.pointCloud.Count / CreteriaSetting.Total_cri;
             print(evalu);
             ProgressBar.SetProgressValue(evalu);
-            if (worldMap.pointCloud.Count <= CreteriaSetting.Total_cre)
+            if (worldMap.pointCloud.Count <= CreteriaSetting.Total_cri)
             {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
                 return;
             }
+            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() ;
             print("begin serializing");
             var worldMapInBytes = worldMap.SerializeToByteArray();
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
@@ -253,7 +263,7 @@ public class firestore : MonoBehaviour {
             //return;
         }*/
         String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-        StaticObject.myARmapName = "We >= " + CreteriaSetting.Weighted_cre + "(" + timeStamp + ")";
+        StaticObject.myARmapName = "We >= " + CreteriaSetting.Weighted_cri + "(" + timeStamp + ")";
         //get two viewport point on top & buttom of screen 
         var screenPosition_buttom = Camera.main.ScreenToViewportPoint(new Vector3(Screen.width / 2.0f, Screen.height / 4.0f, 100.0f));
         var screenPosition_top = Camera.main.ScreenToViewportPoint(new Vector3(Screen.width / 2.0f, 3*Screen.height / 4.0f, 100.0f));
@@ -299,9 +309,9 @@ public class firestore : MonoBehaviour {
                 viewPoint =(float) Math.Round(viewPoint, 0);
             }
             GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() + " Plane: " + viewPoint;
-            float evalu = viewPoint/ CreteriaSetting.Weighted_cre;
+            float evalu = viewPoint/ CreteriaSetting.Weighted_cri;
             ProgressBar.SetProgressValue(evalu);
-            if (viewPoint <= CreteriaSetting.Weighted_cre)
+            if (viewPoint <= CreteriaSetting.Weighted_cri)
             {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
                 return;
@@ -359,7 +369,7 @@ public class firestore : MonoBehaviour {
                       if (!StaticObject.listOfFiles.Contains(pathName))
                           StaticObject.listOfFiles.Add(pathName);
                       //StaticObject.debugger.text = "Finished Upload" + pathName;
-                      UnityEngine.Debug.Log("Finished uploading "+pathName);
+                      print("Finished uploading "+pathName);
                       firestore.checkFile++;
                       StaticObject.debugger.text = "Saving...:"+checkFile.ToString() + "/ 4";
                       if (firestore.checkFile == 4)
@@ -394,7 +404,7 @@ public class firestore : MonoBehaviour {
             if (task.IsFaulted || task.IsCanceled)
             {
                 UnityEngine.Debug.Log(task.Exception.ToString());
-                UnityEngine.Debug.Log("trouve pas de "+Mypath);
+                print("trouve pas de "+Mypath);
                 StaticObject.debugger.text = task.Exception.ToString() + "length: " + task.Result.Length;
             }
             else
@@ -419,7 +429,7 @@ public class firestore : MonoBehaviour {
             if (task.IsFaulted || task.IsCanceled)
             {
                 UnityEngine.Debug.Log("error while read screenshot"+task.Exception.ToString());
-                UnityEngine.Debug.Log("trouve pas de " + Mypath);
+                print("trouve pas de " + Mypath);
             }
             else
             {
@@ -437,13 +447,29 @@ public class firestore : MonoBehaviour {
 
     public void ReadFile(string Mypath)
     {
-        print("reading"+Mypath);
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
+
+        //if current map exists in local storage
+        if (Mypath == "WorldData")
+        {
+            var worldMap = ARWorldMap.Load(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+            if (worldMap != null)
+            {
+                StartCoroutine(LoadWorldMapLocal(worldMap));
+                return;
+            }
+        }
+
+
         const long maxAllowedSize = 100 * 1024 * 1024;
         if (StaticObject.Bunkyou_ref.Child(StaticObject.myARmapID).Child(Mypath) == null)
         {
             print("there is no such reference");
             return;
         }
+
+
         StorageReference reference2Read = StaticObject.Bunkyou_ref.Child(StaticObject.myARmapID).Child(Mypath);
         reference2Read.GetBytesAsync(maxAllowedSize).ContinueWith((Task<byte[]> task) => {
             if (task.IsFaulted || task.IsCanceled)
@@ -455,12 +481,12 @@ public class firestore : MonoBehaviour {
             {
                 byte[] fileContents = task.Result;
                 //StaticObject.debugger.text = Mypath+"is ready";
-                print(Mypath + "is ready");
+                print(Mypath + " is ready to be downloaded");
                 switch (Mypath)
                 {
                     case "WorldData":
                         print("worldData found");
-                        LoadWorldMap(fileContents);//！！！this method causes crash when is called for 2nd times(after scene change)
+                        StartCoroutine(LoadWorldMap(fileContents));//！！！this method causes crash when is called for 2nd times(after scene change)
                         break;
                     case "ObjectInfo":
                         StaticObject.addedGO = byte2Dict(fileContents);
@@ -518,14 +544,11 @@ public class firestore : MonoBehaviour {
    
     }
 
-    private void LoadWorldMap(byte[] worldMapInBytes)
+    public IEnumerator LoadWorldMap(byte[] worldMapInBytes)
     {
         print("Loading WorldMap!");
         ARWorldMap worldMap = ARWorldMap.SerializeFromByteArray(worldMapInBytes);
-        FilesLoaded++;
-        StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
-        print("FilesLoaded++ " + FilesLoaded);
-        print("finished serialize");
+
         UnityEngine.Debug.LogFormat("Map loaded. Center: {0} Extent: {1}", worldMap.center, worldMap.extent);
         UnityARSessionNativeInterface.ARSessionShouldAttemptRelocalization = true;
         var config = m_ARCameraManager.sessionConfiguration;
@@ -533,24 +556,70 @@ public class firestore : MonoBehaviour {
         UnityARSessionRunOption runOption = UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors | UnityARSessionRunOption.ARSessionRunOptionResetTracking;
         //StaticObject.debugger.text = "Restarting session with worldMap";
         print("Restarting session with worldMap");
+        yield return new WaitUntil(TwoFilesAreReady);
+        print("Finished Loading all files");
+        StaticObject.debugger.text = "Finished Loading all files";
+        //show start button for timer after files are ready
+        GameObject.Find("StartTracking").GetComponent<CanvasGroup>().alpha = 1;
+        GameObject.Find("StartTracking").GetComponent<CanvasGroup>().blocksRaycasts = true;
+        yield return new WaitUntil(StaticObject.ClickedStart);
         WorldMapManager.session.RunWithConfigAndOptions(config, runOption);//!!!!!!!!!!!!!这一部分会引起crash
+        FilesLoaded++;
+        StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
+        print("FilesLoaded++ " + FilesLoaded);
+        print("finished serialize");
         loadedMap = worldMap;
+        if(!File.Exists(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID)))
+        {
+            worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+            UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+        }
+
+        yield return null;
+    }
+
+    public IEnumerator LoadWorldMapLocal(ARWorldMap worldMap)
+    {
+        print("Loading WorldMap in local storage!");
+        UnityEngine.Debug.LogFormat("Map loaded. Center: {0} Extent: {1}", worldMap.center, worldMap.extent);
+        UnityARSessionNativeInterface.ARSessionShouldAttemptRelocalization = true;
+        var config = m_ARCameraManager.sessionConfiguration;
+        config.worldMap = worldMap;
+        UnityARSessionRunOption runOption = UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors | UnityARSessionRunOption.ARSessionRunOptionResetTracking;
+        //StaticObject.debugger.text = "Restarting session with worldMap";
+        print("Restarting session with worldMap");
+        yield return new WaitUntil(TwoFilesAreReady);
+        print("Finished Loading all files");
+        StaticObject.debugger.text = "Finished Loading all files";
+        //show start button for timer after files are ready
+        GameObject.Find("StartTracking").GetComponent<CanvasGroup>().alpha = 1;
+        GameObject.Find("StartTracking").GetComponent<CanvasGroup>().blocksRaycasts = true;
+        yield return new WaitUntil(StaticObject.ClickedStart);
+        WorldMapManager.session.RunWithConfigAndOptions(config, runOption);//!!!!!!!!!!!!!这一部分会引起crash
+        FilesLoaded++;
+        StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
+        print("FilesLoaded++ " + FilesLoaded);
+        print("finished serialize");
+        loadedMap = worldMap;
+        yield return null;
+    }
+
+    public static bool TwoFilesAreReady()
+    {
+        return (FilesLoaded >= 2); //FileList+GameObjectInfo
 
     }
-    public static bool FilesAreReady()
+    //All ready after click timer starter button and the AR tracking session is running
+    public static bool AllFilesReady()
     {
         return (FilesLoaded >= 3);
-
     }
 
     public IEnumerator reInstantiateGo(Dictionary<List<float>, List<string>> dict)
     {
-        yield return new WaitUntil(FilesAreReady);
-        //show start button for timer after files are ready
-        GameObject.Find("StartTracking").GetComponent<CanvasGroup>().alpha = 1;
-        GameObject.Find("StartTracking").GetComponent<CanvasGroup>().blocksRaycasts = true;
-        //start rebuild after startTracking is pressed
-        yield return new WaitUntil(StaticObject.ClickedStart);
+
+        //start rebuild after arworldmap is tracked succesful
+        yield return new WaitUntil(StaticObject.ARWorldMapTracked);
 
         print("reInstantiateGo start PrecisARList count="+dict.Count);
         PrecisARList = new List<GameObject>(dict.Count);
@@ -597,7 +666,24 @@ public class firestore : MonoBehaviour {
         firestore.PrecisARListValid = true;
     }
     
-  
+    public void deleteLocalMap()
+    {
+        try
+        {
+            // Check if file exists 
+            if (File.Exists(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID)))
+            {
+                File.Delete(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+                StaticObject.debugger.text = "Map " + StaticObject.myARmapID + " is deleted succesfully in local storage";
+            }
+        }
+        catch (IOException ioExp)
+        {
+            StaticObject.debugger.text = "Map " + StaticObject.myARmapID + " couldn't be deleted properly";
+            Console.WriteLine(ioExp.Message);
+        }
+
+    }
 
     public void delete()
     {
