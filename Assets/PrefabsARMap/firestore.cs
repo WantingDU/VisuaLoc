@@ -162,6 +162,8 @@ public class firestore : MonoBehaviour {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
                 return;
             }
+            worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+            UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             print("begin serializing");
             var worldMapInBytes = worldMap.SerializeToByteArray();
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
@@ -198,6 +200,8 @@ public class firestore : MonoBehaviour {
       
         WorldMapManager.session.GetCurrentWorldMapAsync (worldMap =>
         {
+            worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+            UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             print("begin serializing");
             GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString();
             var worldMapInBytes = worldMap.SerializeToByteArray();
@@ -236,6 +240,8 @@ public class firestore : MonoBehaviour {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
                 return;
             }
+            worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+            UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() ;
             print("begin serializing");
             var worldMapInBytes = worldMap.SerializeToByteArray();
@@ -316,6 +322,10 @@ public class firestore : MonoBehaviour {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
                 return;
             }
+            worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+            UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+            worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+            UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             print("begin serializing");
             var worldMapInBytes = worldMap.SerializeToByteArray();
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
@@ -456,13 +466,14 @@ public class firestore : MonoBehaviour {
             var worldMap = ARWorldMap.Load(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             if (worldMap != null)
             {
+                
                 StartCoroutine(LoadWorldMapLocal(worldMap));
                 return;
             }
         }
 
 
-        const long maxAllowedSize = 100 * 1024 * 1024;
+        const long maxAllowedSize = 1000 * 1024 * 1024;
         if (StaticObject.Bunkyou_ref.Child(StaticObject.myARmapID).Child(Mypath) == null)
         {
             print("there is no such reference");
@@ -481,20 +492,24 @@ public class firestore : MonoBehaviour {
             {
                 byte[] fileContents = task.Result;
                 //StaticObject.debugger.text = Mypath+"is ready";
-                print(Mypath + " is ready to be downloaded");
+                print(Mypath + " is downloaded");
                 switch (Mypath)
                 {
                     case "WorldData":
                         print("worldData found");
-                        StartCoroutine(LoadWorldMap(fileContents));//！！！this method causes crash when is called for 2nd times(after scene change)
+                        print("Trying to load downloded WorldMap!");
+                        
+                        StartCoroutine(LoadWorldMap(fileContents));
+                        print("Tried to load downloded WorldMap!");
                         break;
                     case "ObjectInfo":
                         StaticObject.addedGO = byte2Dict(fileContents);
                         print("objectinfo found");
-                        print("StaticObject.addedGO"+StaticObject.addedGO.Count);
+                        print("StaticObject.addedGO "+StaticObject.addedGO.Count);
                         FilesLoaded++;
                         StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
                         StartCoroutine(reInstantiateGo(StaticObject.addedGO));
+                        print("Tried to reinstantiateGo!");
                         break;
                     case "FileList":
                         StaticObject.listOfFiles = byte2List(fileContents);
@@ -511,6 +526,7 @@ public class firestore : MonoBehaviour {
 
 
     }
+
     public void ViewCloud()
     {
         if (view)
@@ -563,13 +579,12 @@ public class firestore : MonoBehaviour {
         GameObject.Find("StartTracking").GetComponent<CanvasGroup>().alpha = 1;
         GameObject.Find("StartTracking").GetComponent<CanvasGroup>().blocksRaycasts = true;
         yield return new WaitUntil(StaticObject.ClickedStart);
-        WorldMapManager.session.RunWithConfigAndOptions(config, runOption);//!!!!!!!!!!!!!这一部分会引起crash
+        WorldMapManager.session.RunWithConfigAndOptions(config, runOption);
         FilesLoaded++;
-        StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
         print("FilesLoaded++ " + FilesLoaded);
         print("finished serialize");
         loadedMap = worldMap;
-        if(!File.Exists(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID)))
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID)))
         {
             worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
@@ -597,7 +612,6 @@ public class firestore : MonoBehaviour {
         yield return new WaitUntil(StaticObject.ClickedStart);
         WorldMapManager.session.RunWithConfigAndOptions(config, runOption);//!!!!!!!!!!!!!这一部分会引起crash
         FilesLoaded++;
-        StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
         print("FilesLoaded++ " + FilesLoaded);
         print("finished serialize");
         loadedMap = worldMap;

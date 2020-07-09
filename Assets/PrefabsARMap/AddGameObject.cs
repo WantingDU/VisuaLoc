@@ -19,6 +19,7 @@ public class AddGameObject : MonoBehaviour
     }
     public void chooseObject()
     {
+        StaticObject.AddClicked = true;
         string ButtonnName = EventSystem.current.currentSelectedGameObject.name.Replace("Button", ""); // to replace the specific text with blank;
         print(ButtonnName);
         Prefab2Instantiate = Resources.Load<GameObject>(ButtonnName);
@@ -31,7 +32,7 @@ public class AddGameObject : MonoBehaviour
             .HitTest(point, ARHitTestResultType.ARHitTestResultTypeExistingPlaneUsingExtent);
         
         // 平面とあたっていた場合
-        if (hitResults.Count > 0)
+        if (hitResults.Count > 0&&StaticObject.AddClicked)
         {
             
             alreadyAdd = true;
@@ -56,7 +57,6 @@ public class AddGameObject : MonoBehaviour
                 var touch = Input.GetTouch(0);
                 if (touch.phase == TouchPhase.Began)
                 {
-                    print("hit");
                     StaticObject.photoAdded = false;
                     var screenPosition = Camera.main.ScreenToViewportPoint(touch.position);
                     ARPoint point = new ARPoint

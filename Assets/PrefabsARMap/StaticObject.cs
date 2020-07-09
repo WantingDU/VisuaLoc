@@ -23,9 +23,11 @@ public class StaticObject : MonoBehaviour
     public static float tempSearchRange;
     public static int currentOrder;
     public static bool startCliked;
+    public static bool AddClicked;
     public static bool isTracked;
     private void OnDestroy()
     {
+        StaticObject.AddClicked = false;
         addedGO = null;
         mapDict = null;
         myARmapName = "Default";

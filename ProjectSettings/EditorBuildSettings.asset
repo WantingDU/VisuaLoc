@@ -59,4 +59,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/PrefabsARMap/Scenes/Setting.unity
     guid: bb6ef46182bdf43e7a593d961575cab6
+  - enabled: 0
+    path: Assets/UnityARKitPlugin/ARKitRemote/UnityARKitRemote.unity
+    guid: 5b1b51b67afd64a94945434aa42400c9
   m_configObjects: {}

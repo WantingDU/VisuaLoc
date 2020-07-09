@@ -6,6 +6,7 @@ public class SaveDeleteButtonController : MonoBehaviour
 {
 	public void onSaveNormalObject()
 	{
+        StaticObject.AddClicked = false;
 		AddGameObject.alreadyAdd = false;
 		GameObject g = Instantiate(Resources.Load<GameObject>(gameObject.name + "Simple"), transform.position, transform.rotation);
         g.transform.localScale = transform.localScale;
@@ -32,6 +33,7 @@ public class SaveDeleteButtonController : MonoBehaviour
 	}
 	public void OnDelete()
 	{
+        StaticObject.AddClicked = false;
         AddGameObject.alreadyAdd = false;
         Destroy(gameObject);
 

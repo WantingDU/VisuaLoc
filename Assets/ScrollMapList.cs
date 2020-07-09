@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +27,13 @@ public class ScrollMapList : MonoBehaviour
     {
         StaticObject.myARmapID = id;
         StaticObject.myARmapName = MapName;
-        SceneManager.LoadSceneAsync("ARView");
+        GameObject.Find("SearchPanel").GetComponent<CanvasGroup>().alpha = 0;
+        GameObject.Find("SearchPanel").GetComponent<CanvasGroup>().blocksRaycasts = false;
+        //SceneManager.LoadSceneAsync("ARView");
+        LoadingBehaviour.Show();
+        LoadingBehaviour.Description.text = StaticObject.myARmapName;
+        GameObject LoadPanel = GameObject.Find("LoadingInterface");
+        StaticCoroutine.DoCoroutine(firestore.LoadScreenshot(id + "/ARMapScreenshot.jpg", LoadPanel));
+        
     }
 }

@@ -43,8 +43,8 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
                 if (firestore.AllFilesReady())
                 {
                     firestore.sw.Stop();
-                    PersistenceTest.writeNewRebuild(StaticObject.myARmapID,"1 ",firestore.sw.ElapsedMilliseconds.ToString(), CommonVariables.GetTimestamp(System.DateTime.Now));
-                    //firestore.sw.Reset();
+                    PersistenceTest.writeNewRebuild_simple(StaticObject.myARmapID,"1 ",firestore.sw.ElapsedMilliseconds.ToString(), CommonVariables.GetTimestamp(System.DateTime.Now), StaticObject.myARmapName, Auth.UserSelfId);
+                    //PersistenceTest.writeNewRebuild_simple(StaticObject.myARmapID, "0", "timeout,>=20s", CommonVariables.GetTimestamp(System.DateTime.Now), StaticObject.myARmapName);
                     firestore.FilesLoaded = 0;
                     StaticObject.isTracked = true;
                 }
@@ -55,7 +55,8 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
             if(firestore.sw.ElapsedMilliseconds >= 20000)
             {
                 firestore.sw.Stop();
-                PersistenceTest.writeNewRebuild(StaticObject.myARmapID, "0", "timeout,>=20s",CommonVariables.GetTimestamp(System.DateTime.Now));
+                //PersistenceTest.writeNewRebuild(StaticObject.myARmapID, "0", "timeout,>=20s",CommonVariables.GetTimestamp(System.DateTime.Now));
+                PersistenceTest.writeNewRebuild_simple(StaticObject.myARmapID, "0", "timeout,>=20s", CommonVariables.GetTimestamp(System.DateTime.Now),StaticObject.myARmapName,Auth.UserSelfId);
                 firestore.sw.Reset();
                 firestore.FilesLoaded = 0;
             }

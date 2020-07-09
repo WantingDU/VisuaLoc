@@ -44,11 +44,13 @@ public class EventScript2 : MonoBehaviour
     {
         if (CG.alpha ==0)
         {
+
             CG.alpha = 1;
             CG.blocksRaycasts = true;
         }
         else
         {
+            StaticObject.AddClicked = false;
             CG.alpha = 0;
             CG.blocksRaycasts = false;
         }

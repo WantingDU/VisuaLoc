@@ -93,12 +93,17 @@ public class Firebase2Map : MonoBehaviour
                     string mapID = myMapExist[hit.transform.root.gameObject].guid;
                     StaticObject.myARmapID = mapID;
                     StaticObject.myARmapName = myMapExist[hit.transform.root.gameObject].placeName;
-                    StaticCoroutine.DoCoroutine(EventScript.Go2ARTask());
+                    //StaticCoroutine.DoCoroutine(EventScript.Go2ARTask());
+                    LoadingBehaviour.Show();
+                    LoadingBehaviour.Description.text = StaticObject.myARmapName;
+                    GameObject LoadPanel = GameObject.Find("LoadingInterface");
+                    StartCoroutine(firestore.LoadScreenshot(mapID + "/ARMapScreenshot.jpg", LoadPanel));
                     //SceneManager.LoadSceneAsync("ARView");
 
                 }
-            }
 
+            }
+                
             else
             {
                 Destroy(GameObject.FindWithTag("little_panel"));
@@ -523,7 +528,8 @@ public class Firebase2Map : MonoBehaviour
 
                 myMapExist.Add(point, my_point);
                 DictOfARMap.Add(guid, placeName1);
-                
+
+                ScrollMapList.buttonClicked(guid,placeName1);
 
             }
         },
