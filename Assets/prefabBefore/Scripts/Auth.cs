@@ -11,7 +11,7 @@ public class Auth : MonoBehaviour
     string email;
     string password;
     public static string UserSelfId;
-
+    public static bool isTest;
     Coroutine SignInThread;
     Text output;
     private void Awake()
@@ -55,6 +55,7 @@ public class Auth : MonoBehaviour
     }
     private IEnumerator SignInAsync()
     {
+        isTest = GameObject.Find("isTest").GetComponent<Toggle>().isOn;
         //for simplifying program debuggin
         if (GameObject.Find("Email").GetComponent<InputField>().text.Length==0)
         {

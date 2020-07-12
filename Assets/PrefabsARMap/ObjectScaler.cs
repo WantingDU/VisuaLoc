@@ -34,8 +34,8 @@ public class ObjectScaler : MonoBehaviour
             float newDistance = Vector2.Distance(newTouch1.position, newTouch2.position);
             //两个距离之差，为正表示放大手势， 为负表示缩小手势
             float offset = newDistance - oldDistance;
-            //放大因子， 一个像素按 0.01倍来算(100可调整)
-            float scaleFactor = offset / 50f;
+            //放大因子， 一个像素按 0.005倍来算(200可调整)
+            float scaleFactor = offset / 200f;
             Vector3 localScale = transform.localScale;
             Vector3 scale = new Vector3(localScale.x + scaleFactor,
                 localScale.y + scaleFactor,

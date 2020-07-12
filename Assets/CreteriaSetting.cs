@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class CreteriaSetting : MonoBehaviour
 {
-    public static int CurrentFrame_cri = 200;
-    public static int Total_cri=3000;
-    public static int Weighted_cri=600;
+    public static int CurrentFrame_cri = 150;
+    public static int Total_cri=10000;
+    public static int Weighted_cri=300;
     InputField CF_input, To_input, We_input;
     public static CanvasGroup cg;
     // Start is called before the first frame update

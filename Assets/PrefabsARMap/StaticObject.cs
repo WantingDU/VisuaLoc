@@ -139,12 +139,13 @@ public class StaticObject : MonoBehaviour
         return Vector3.zero;
     }
 
-    public void TimerStarter()
+    public  void TimerStarter()
     {
         firestore.sw.Start();
         startCliked = true;
         GameObject.Find("StartTracking").GetComponent<CanvasGroup>().alpha = 0;
         GameObject.Find("StartTracking").GetComponent<CanvasGroup>().blocksRaycasts = false;
+
 
     }
 

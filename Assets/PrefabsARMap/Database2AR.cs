@@ -68,8 +68,13 @@ public class Database2AR : MonoBehaviour
     public void Start()
     {
         StaticObject.tempSearchRange = Firebase2Map.SearchRange;
-        FindObjectOfType<Slider>().value = Firebase2Map.SearchRange;
-        print("changed slider value="+Firebase2Map.SearchRange);
+        //==================For Test================//
+        if (Auth.isTest)
+        {
+            StaticObject.tempSearchRange = 0;
+        }
+        //==================For Test================//
+        FindObjectOfType<Slider>().value = StaticObject.tempSearchRange;
         placesRef.OrderByChild("coordinate/z").StartAt(CommonVariables.location.latitude - Firebase2Map.SearchRange).EndAt(CommonVariables.location.latitude + Firebase2Map.SearchRange).ChildAdded += HandleChildAdded;
         placesRef.OrderByChild("coordinate/z").StartAt(CommonVariables.location.latitude - Firebase2Map.SearchRange).EndAt(CommonVariables.location.latitude + Firebase2Map.SearchRange).ChildChanged += HandleChildChanged;
         placesRef.ChildRemoved += HandleChildRemoved;

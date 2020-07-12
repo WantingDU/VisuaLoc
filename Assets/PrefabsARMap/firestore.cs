@@ -20,7 +20,7 @@ public class firestore : MonoBehaviour {
     GameObject Prefab;
     GameObject PrefabNoImage;
     public static bool ScenePublic;
-    private UnityARAnchorManager unityARAnchorManager;
+    //private UnityARAnchorManager unityARAnchorManager;
     public static List<GameObject> PrecisARList;
     public static int checkFile;
     public static bool PrecisARListValid;
@@ -188,8 +188,8 @@ public class firestore : MonoBehaviour {
             StaticObject.myARmapName = "CF >=" + CreteriaSetting.CurrentFrame_cre + " (" + timeStamp + ")";
             //return;
         }*/
-        string timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-        StaticObject.myARmapName = "CF >=" + CreteriaSetting.CurrentFrame_cri + " (" + timeStamp + ")";
+        
+       
         float evalu = (float) PointCloudParticleExampleVersionDu.CPNumber/CreteriaSetting.CurrentFrame_cri;
         ProgressBar.SetProgressValue(evalu);
         if (PointCloudParticleExampleVersionDu.CPNumber <= CreteriaSetting.CurrentFrame_cri)
@@ -197,13 +197,14 @@ public class firestore : MonoBehaviour {
             StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
             return;
         }
-      
+        string timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
+        StaticObject.myARmapName = StaticObject.myARmapName + "__CF >=" + CreteriaSetting.CurrentFrame_cri + " (" + timeStamp + ")";
         WorldMapManager.session.GetCurrentWorldMapAsync (worldMap =>
         {
             worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             print("begin serializing");
-            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString();
+            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString()+"CF: "+ PointCloudParticleExampleVersionDu.CPNumber.ToString();
             var worldMapInBytes = worldMap.SerializeToByteArray();
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
             GalleryController.onScreenshotMap();
@@ -227,8 +228,7 @@ public class firestore : MonoBehaviour {
             StaticObject.myARmapName = "To >="+CreteriaSetting.Total_cre+" ("+timeStamp+")";
             //return;
         }*/
-        String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-        StaticObject.myARmapName = "To >=" + CreteriaSetting.Total_cri + " (" + timeStamp + ")";
+
         WorldMapManager.session.GetCurrentWorldMapAsync(worldMap =>
         {
             print(worldMap.pointCloud.Count);
@@ -240,9 +240,11 @@ public class firestore : MonoBehaviour {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
                 return;
             }
+            String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
+            StaticObject.myARmapName =  StaticObject.myARmapName + "__To >=" + CreteriaSetting.Total_cri + " (" + timeStamp + ")";
             worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
-            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() ;
+            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() + "CF: " + PointCloudParticleExampleVersionDu.CPNumber.ToString();
             print("begin serializing");
             var worldMapInBytes = worldMap.SerializeToByteArray();
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
@@ -268,8 +270,6 @@ public class firestore : MonoBehaviour {
             StaticObject.myARmapName = "We >= "+CreteriaSetting.Weighted_cre+"("+timeStamp+")";
             //return;
         }*/
-        String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-        StaticObject.myARmapName = "We >= " + CreteriaSetting.Weighted_cri + "(" + timeStamp + ")";
         //get two viewport point on top & buttom of screen 
         var screenPosition_buttom = Camera.main.ScreenToViewportPoint(new Vector3(Screen.width / 2.0f, Screen.height / 4.0f, 100.0f));
         var screenPosition_top = Camera.main.ScreenToViewportPoint(new Vector3(Screen.width / 2.0f, 3*Screen.height / 4.0f, 100.0f));
@@ -314,7 +314,7 @@ public class firestore : MonoBehaviour {
                 }
                 viewPoint =(float) Math.Round(viewPoint, 0);
             }
-            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() + " Plane: " + viewPoint;
+            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() + " Plane: " + viewPoint+  "CF: " + PointCloudParticleExampleVersionDu.CPNumber.ToString();
             float evalu = viewPoint/ CreteriaSetting.Weighted_cri;
             ProgressBar.SetProgressValue(evalu);
             if (viewPoint <= CreteriaSetting.Weighted_cri)
@@ -322,8 +322,8 @@ public class firestore : MonoBehaviour {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
                 return;
             }
-            worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
-            UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
+            String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
+            StaticObject.myARmapName =StaticObject.myARmapName + "__We >= " + CreteriaSetting.Weighted_cri + "(" + timeStamp + ")";
             worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             print("begin serializing");
@@ -361,7 +361,8 @@ public class firestore : MonoBehaviour {
     public static IEnumerator WriteFile(byte[] custom_bytes,string pathName)
     {
             print("writing " + pathName);
-            StorageReference newMap = StaticObject.Bunkyou_ref.Child(pathName);
+            //SaveFileLocal(pathName, custom_bytes);  //problem :not found directory
+        StorageReference newMap = StaticObject.Bunkyou_ref.Child(pathName);
             newMap.PutBytesAsync(custom_bytes)
               .ContinueWith((Task<StorageMetadata> task) => {
                   if (task.IsFaulted || task.IsCanceled)
@@ -454,24 +455,75 @@ public class firestore : MonoBehaviour {
         });
         yield return new WaitForEndOfFrame();
     }
+    /*
+    public static void SaveFileLocal(string filename,byte[] FileBytes)
+    {
 
+        print("save to " + filename );
+        File.WriteAllBytes(filename, FileBytes);
+        print("save "+ filename + " in local storage");
+         
+    }*/
     public void ReadFile(string Mypath)
     {
 
         //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
-
+        var path = Path.Combine(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID), Mypath + ".txt");
         //if current map exists in local storage
         if (Mypath == "WorldData")
         {
             var worldMap = ARWorldMap.Load(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             if (worldMap != null)
             {
-                
                 StartCoroutine(LoadWorldMapLocal(worldMap));
                 return;
             }
         }
+        /*
+        if (Mypath == "ObjectInfo")
+        {
+            //var path = Path.Combine(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID), Mypath + ".txt");
+            print(path);
 
+            if (Directory.Exists(path))
+            {
+                print("Directory.Exists"+path);
+                var ObjectInfo = File.ReadAllBytes(path);
+                if (ObjectInfo != null)
+                {
+                    StaticObject.addedGO = byte2Dict(ObjectInfo);
+                    print("objectinfo found in local");
+                    print("StaticObject.addedGO " + StaticObject.addedGO.Count);
+                    FilesLoaded++;
+                    StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
+                    StartCoroutine(reInstantiateGo(StaticObject.addedGO));
+                    print("Tried to reinstantiateGo!");
+                    return;
+                }
+            }
+        }
+        if (Mypath == "FileList")
+        {
+            //var path = Path.Combine(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID), Mypath + ".txt");
+            print(path);
+            if (Directory.Exists(path))
+            {
+
+                var FileList = File.ReadAllBytes(path);
+                if (FileList != null)
+                {
+                    StaticObject.listOfFiles = byte2List(FileList);
+                    FilesLoaded++;
+                    StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
+                    print("FileList found in local");
+                    return;
+                }
+            }
+             
+        }
+        */
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 
         const long maxAllowedSize = 1000 * 1024 * 1024;
         if (StaticObject.Bunkyou_ref.Child(StaticObject.myARmapID).Child(Mypath) == null)
@@ -498,24 +550,27 @@ public class firestore : MonoBehaviour {
                     case "WorldData":
                         print("worldData found");
                         print("Trying to load downloded WorldMap!");
-                        
                         StartCoroutine(LoadWorldMap(fileContents));
                         print("Tried to load downloded WorldMap!");
                         break;
                     case "ObjectInfo":
+                        
                         StaticObject.addedGO = byte2Dict(fileContents);
                         print("objectinfo found");
                         print("StaticObject.addedGO "+StaticObject.addedGO.Count);
                         FilesLoaded++;
                         StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
                         StartCoroutine(reInstantiateGo(StaticObject.addedGO));
+                        //SaveFileLocal(path, fileContents);
                         print("Tried to reinstantiateGo!");
                         break;
                     case "FileList":
+                        
                         StaticObject.listOfFiles = byte2List(fileContents);
                         FilesLoaded++;
                         StaticObject.debugger.text = "Loading..." + FilesLoaded.ToString() + "/ 3";
                         print("FileList found");
+                        //SaveFileLocal(path, fileContents);
                         break;
 
                 }
@@ -578,6 +633,9 @@ public class firestore : MonoBehaviour {
         //show start button for timer after files are ready
         GameObject.Find("StartTracking").GetComponent<CanvasGroup>().alpha = 1;
         GameObject.Find("StartTracking").GetComponent<CanvasGroup>().blocksRaycasts = true;
+        //active RestartTracking button
+        GameObject.Find("RestartTracking").GetComponent<CanvasGroup>().alpha = 1;
+        GameObject.Find("RestartTracking").GetComponent<CanvasGroup>().blocksRaycasts = true;
         yield return new WaitUntil(StaticObject.ClickedStart);
         WorldMapManager.session.RunWithConfigAndOptions(config, runOption);
         FilesLoaded++;
@@ -597,10 +655,12 @@ public class firestore : MonoBehaviour {
     {
         print("Loading WorldMap in local storage!");
         UnityEngine.Debug.LogFormat("Map loaded. Center: {0} Extent: {1}", worldMap.center, worldMap.extent);
+        /*
         UnityARSessionNativeInterface.ARSessionShouldAttemptRelocalization = true;
         var config = m_ARCameraManager.sessionConfiguration;
         config.worldMap = worldMap;
         UnityARSessionRunOption runOption = UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors | UnityARSessionRunOption.ARSessionRunOptionResetTracking;
+        */
         //StaticObject.debugger.text = "Restarting session with worldMap";
         print("Restarting session with worldMap");
         yield return new WaitUntil(TwoFilesAreReady);
@@ -609,15 +669,32 @@ public class firestore : MonoBehaviour {
         //show start button for timer after files are ready
         GameObject.Find("StartTracking").GetComponent<CanvasGroup>().alpha = 1;
         GameObject.Find("StartTracking").GetComponent<CanvasGroup>().blocksRaycasts = true;
+        //active restart button
+        GameObject.Find("RestartTracking").GetComponent<CanvasGroup>().alpha = 1;
+        GameObject.Find("RestartTracking").GetComponent<CanvasGroup>().blocksRaycasts = true;
+        //
         yield return new WaitUntil(StaticObject.ClickedStart);
-        WorldMapManager.session.RunWithConfigAndOptions(config, runOption);//!!!!!!!!!!!!!这一部分会引起crash
+        //WorldMapManager.session.RunWithConfigAndOptions(config, runOption);//!!!!!!!!!!!!!这一部分会引起crash
+        loadedMap = worldMap;
+        startTracking();
         FilesLoaded++;
         print("FilesLoaded++ " + FilesLoaded);
         print("finished serialize");
-        loadedMap = worldMap;
+        //loadedMap = worldMap;
         yield return null;
     }
+    public void startTracking()
+    {
 
+        UnityARSessionNativeInterface.ARSessionShouldAttemptRelocalization = true;
+        var config = m_ARCameraManager.sessionConfiguration;
+        config.worldMap = loadedMap;
+        UnityARSessionRunOption runOption = UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors | UnityARSessionRunOption.ARSessionRunOptionResetTracking;
+        WorldMapManager.session.RunWithConfigAndOptions(config, runOption);//!!!!!!!!!!!!!这一部分会引起crash
+        sw.Reset();
+        FilesLoaded = 3;
+        sw.Start();
+    }
     public static bool TwoFilesAreReady()
     {
         return (FilesLoaded >= 2); //FileList+GameObjectInfo
