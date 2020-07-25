@@ -14,6 +14,7 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
     private ParticleSystem.Particle [] particles;
     private Text cloudPNumber;
     public static int CPNumber;
+    float timeout = 60000f;
     // Use this for initialization
     private void OnDestroy()
     {
@@ -52,11 +53,11 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
         }
         if (firestore.sw != null)
         {
-            if(firestore.sw.ElapsedMilliseconds >= 20000)
+            if(firestore.sw.ElapsedMilliseconds >= timeout)
             {
                 firestore.sw.Stop();
                 //PersistenceTest.writeNewRebuild(StaticObject.myARmapID, "0", "timeout,>=20s",CommonVariables.GetTimestamp(System.DateTime.Now));
-                PersistenceTest.writeNewRebuild_simple(StaticObject.myARmapID, "0", "timeout,>=20s", CommonVariables.GetTimestamp(System.DateTime.Now),StaticObject.myARmapName,Auth.UserSelfId);
+                PersistenceTest.writeNewRebuild_simple(StaticObject.myARmapID, "0", "100000", CommonVariables.GetTimestamp(System.DateTime.Now),StaticObject.myARmapName,Auth.UserSelfId);
                 firestore.sw.Reset();
                 firestore.FilesLoaded = 0;
             }

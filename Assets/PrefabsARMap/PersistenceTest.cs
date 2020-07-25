@@ -81,7 +81,7 @@ public class PersistenceTest : MonoBehaviour
 
         SaveResult new_result = new SaveResult( guid,  name,  userID,  type,  CF,  Total,  We);
         string json = JsonUtility.ToJson(new_result);
-        CommonVariables.reference.Child("SaveResults_test").Child(guid).SetRawJsonValueAsync(json);
+        CommonVariables.reference.Child("SaveResults_test").Child(name).SetRawJsonValueAsync(json);
 
     }
     public static void writeNewRebuild(string guid, string succes, string time,string timeStamp)
@@ -97,7 +97,7 @@ public class PersistenceTest : MonoBehaviour
 
         RebuildResult_simple new_result = new RebuildResult_simple(guid, succes, time, timeStamp,  name,userID);
         string json = JsonUtility.ToJson(new_result);
-        CommonVariables.reference.Child("RebuildResults_Test").Child(name+"_"+guid).Child(timeStamp).SetRawJsonValueAsync(json);
+        CommonVariables.reference.Child("RebuildResults_Test").Child(name).Child(timeStamp).SetRawJsonValueAsync(json);
 
     }
 

@@ -11,7 +11,7 @@
       }, 
       "oauth_client": [
         {
-          "client_id": "388789100035-jkq0epqef9onisprs9j9k7nuc6nuuq3v.apps.googleusercontent.com"
+          "client_id": "388789100035-1ce92fp1obtcr0mqf3nbgg29m9ere1fc.apps.googleusercontent.com"
         }
       ], 
       "api_key": [
@@ -20,9 +20,9 @@
         }
       ], 
       "client_info": {
-        "mobilesdk_app_id": "1:388789100035:ios:3df96045e1744a2138b836", 
+        "mobilesdk_app_id": "1:388789100035:ios:251a3b2b3f39198d38b836", 
         "android_client_info": {
-          "package_name": "com.dubidu.locationBased"
+          "package_name": "com.lab.VisuLoc"
         }
       }
     }

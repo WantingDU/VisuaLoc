@@ -67,14 +67,19 @@ public class EventScript : MonoBehaviour
         if (active)
         {
             canvasGroup.alpha = canvasGroup.alpha = 1f; 
-            canvasGroup.blocksRaycasts = true; 
+            canvasGroup.blocksRaycasts = true;
+            if (!ScrollMapList.MapListInScrollBar)
+            {
+                ScrollMapList.initList(Firebase2Map.DictOfARMap);
+            }
         }
         else
         {
-            canvasGroup.alpha = canvasGroup.alpha = 0f; //this makes everything transparent
+            canvasGroup.alpha = 0f; //this makes everything transparent
             canvasGroup.blocksRaycasts = false; //this prevents the UI element to receive input events
+
         }
-        ScrollMapList.initList(Firebase2Map.DictOfARMap);
+        
     }
 
 }

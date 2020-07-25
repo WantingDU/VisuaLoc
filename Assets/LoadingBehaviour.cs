@@ -9,6 +9,7 @@ public class LoadingBehaviour : MonoBehaviour
     public static Text Description;
     public static GameObject OkButton;
     public static CanvasGroup cg;
+    public Texture2D myTexture;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,5 +31,7 @@ public class LoadingBehaviour : MonoBehaviour
     {
         cg.alpha = 0;
         cg.blocksRaycasts = false;
+        Description.text = "Loading";
+        transform.GetComponentInChildren<RawImage>().texture = myTexture;
     }
 }

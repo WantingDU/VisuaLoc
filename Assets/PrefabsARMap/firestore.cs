@@ -468,7 +468,7 @@ public class firestore : MonoBehaviour {
     {
 
         //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
-        var path = Path.Combine(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID), Mypath + ".txt");
+        //var path = Path.Combine(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID), Mypath + ".txt");
         //if current map exists in local storage
         if (Mypath == "WorldData")
         {
@@ -749,6 +749,8 @@ public class firestore : MonoBehaviour {
             PrecisARList.Insert(Int32.Parse(Go.Value[6]),m_InfoPanel);
             print("reinstantiate "+m_InfoPanel.name);
         }
+        PrecisARList.Reverse();
+
         print("PrecisARlist is Valid: "+PrecisARList.Count);
         if (PrecisARList.Count > 0)
         {

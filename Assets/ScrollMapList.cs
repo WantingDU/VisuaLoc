@@ -7,8 +7,11 @@ using UnityEngine.UI;
 
 public class ScrollMapList : MonoBehaviour
 {
-    
-
+    public static bool MapListInScrollBar;
+    private void Awake()
+    {
+        MapListInScrollBar = false;
+    }
     public static void initList(Dictionary<string,string> list)
     {
         GameObject prefabButton = Resources.Load<GameObject>("Button4List");
@@ -21,6 +24,7 @@ public class ScrollMapList : MonoBehaviour
             mapbutton.GetComponentInChildren<Text>().text = map.Value;
             mapbutton.name = map.Key; //key is the guid of ARMap
             mapbutton.GetComponent<Button>().onClick.AddListener(() => { buttonClicked(map.Key, map.Value); });
+            MapListInScrollBar = true;
         }
     }
     public static void buttonClicked(string id,string MapName)

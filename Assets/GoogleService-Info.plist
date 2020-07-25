@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>388789100035-jkq0epqef9onisprs9j9k7nuc6nuuq3v.apps.googleusercontent.com</string>
+	<string>388789100035-1ce92fp1obtcr0mqf3nbgg29m9ere1fc.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.388789100035-jkq0epqef9onisprs9j9k7nuc6nuuq3v</string>
+	<string>com.googleusercontent.apps.388789100035-1ce92fp1obtcr0mqf3nbgg29m9ere1fc</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBHVr8ryZB7OM0mTF8FIBSeL-mzzJeXK6Y</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.dubidu.locationBased</string>
+	<string>com.lab.VisuLoc</string>
 	<key>PROJECT_ID</key>
 	<string>shareardubidu</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:388789100035:ios:3df96045e1744a2138b836</string>
+	<string>1:388789100035:ios:251a3b2b3f39198d38b836</string>
 	<key>DATABASE_URL</key>
 	<string>https://shareardubidu.firebaseio.com</string>
 </dict>
