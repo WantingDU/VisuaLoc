@@ -43,6 +43,7 @@ public class AddGameObject : MonoBehaviour
             g.transform.position = UnityARMatrixOps.GetPosition(hitResults[0].worldTransform);
             g.transform.rotation = UnityARMatrixOps.GetRotation(hitResults[0].worldTransform);
             
+            
 
         }
     }

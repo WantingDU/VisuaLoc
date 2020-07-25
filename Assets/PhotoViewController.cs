@@ -9,50 +9,42 @@ public class PhotoViewController : MonoBehaviour
     CanvasGroup cg;
     public Texture2D myTexture;
     bool isShow;
+    RawImage _image;
     void Start()
     {
         cg = transform.GetComponent<CanvasGroup>();
-        transform.GetComponentInChildren<RawImage>().texture = myTexture;
-        StartCoroutine(firestore.LoadScreenshot(StaticObject.myARmapID + "/ARMapScreenshot.jpg", gameObject));
-
-        isShow = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (StaticObject.isTracked)
+        _image = transform.GetComponentInChildren<RawImage>();
+        transform.GetChild(0).GetComponent<RectTransform>().sizeDelta=new Vector2(Screen.width,Screen.height);
+        _image.texture = myTexture;
+        if (StaticObject.myARmapName == "Default")
         {
-            Hide();
+            cg.alpha = 0;
+            isShow = false;
+            return;
         }
+        StartCoroutine(firestore.LoadScreenshot(StaticObject.myARmapID + "/ARMapScreenshot.jpg", gameObject));
+        isShow = true;
+        
     }
+
     private void OnDestroy()
     {
         cg.alpha = 0;
         cg.blocksRaycasts = false;
         transform.GetComponentInChildren<RawImage>().texture = myTexture;
     }
-    private void Hide()
-    {
-        isShow = false;
-        cg.alpha = 0;
-        cg.blocksRaycasts = false;
-    }
-    private void Show()
-    {
-        isShow = true;
-        cg.alpha = 1;
-        cg.blocksRaycasts = true;
-    }
+
     public void switchView()
     {
         if (isShow)
         {
-            Hide();
+            isShow = false;
+            cg.alpha = 0;
         }
         else
         {
-            Show();
+            isShow = true;
+            cg.alpha = 1;
         }
     }
 }

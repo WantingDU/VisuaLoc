@@ -60,8 +60,14 @@ public class GalleryController : MonoBehaviour
 	}
     private static IEnumerator TakeScreenshot()
     {
+        int i = 0;
         UICG.alpha = 0;
         UICG.blocksRaycasts = false;
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("VirtualObject")){
+            MoveToLayer(g.transform, "Invisible");
+            i++;
+        }
+        print("Virtual Object: " + i);
         yield return new WaitForEndOfFrame();
 
         Texture2D ss = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
@@ -76,6 +82,17 @@ public class GalleryController : MonoBehaviour
         Destroy(ss);
         UICG.alpha = 1;
         UICG.blocksRaycasts = true;
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("VirtualObject"))
+        {
+            MoveToLayer(g.transform,"Default");
+        }
+    }
+    //recursive calls to change layer of all children
+    public static void MoveToLayer(Transform root,string layerName)
+    {
+        root.gameObject.layer = LayerMask.NameToLayer(layerName);
+        foreach (Transform child in root)
+            MoveToLayer(child, layerName);
     }
     private IEnumerator TakeScreenshotAndSave()
 	{

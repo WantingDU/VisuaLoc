@@ -12,7 +12,7 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
     private bool frameUpdated = false;
     private ParticleSystem currentPS;
     private ParticleSystem.Particle [] particles;
-    private Text cloudPNumber;
+    //private Text cloudPNumber;
     public static int CPNumber;
     float timeout = 60000f;
     // Use this for initialization
@@ -24,42 +24,41 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
         UnityARSessionNativeInterface.ARFrameUpdatedEvent += ARFrameUpdated;
         currentPS = Instantiate (pointCloudParticlePrefab);
         frameUpdated = false;
-        cloudPNumber = GameObject.Find("CPCurrent").GetComponent<Text>();
+        //cloudPNumber = GameObject.Find("CPCurrent").GetComponent<Text>();
     }
 	
     public void ARFrameUpdated(UnityARCamera camera)
     {
+        
         switch (camera.trackingState)
         {
             case ARTrackingState.ARTrackingStateNotAvailable:
-                cloudPNumber.color = Color.black;
                 break;
             case ARTrackingState.ARTrackingStateLimited:
-                cloudPNumber.color = Color.red;
                 break;
             case ARTrackingState.ARTrackingStateNormal:
-                cloudPNumber.color = Color.green;
-
                 //Stop timer when tracking succesful 
                 if (firestore.AllFilesReady())
                 {
                     firestore.sw.Stop();
-                    PersistenceTest.writeNewRebuild_simple(StaticObject.myARmapID,"1 ",firestore.sw.ElapsedMilliseconds.ToString(), CommonVariables.GetTimestamp(System.DateTime.Now), StaticObject.myARmapName, Auth.UserSelfId);
-                    //PersistenceTest.writeNewRebuild_simple(StaticObject.myARmapID, "0", "timeout,>=20s", CommonVariables.GetTimestamp(System.DateTime.Now), StaticObject.myARmapName);
+                    //PersistenceTest.writeNewRebuild_simple(StaticObject.myARmapID,"1 ",firestore.sw.ElapsedMilliseconds.ToString(), CommonVariables.GetTimestamp(System.DateTime.Now), StaticObject.myARmapName, Auth.UserSelfId);
                     firestore.FilesLoaded = 0;
                     StaticObject.isTracked = true;
+                    StaticObject.debugger.text = "Recoginized the scene successfully";
                 }
                 break;
         }
+        
         if (firestore.sw != null)
         {
             if(firestore.sw.ElapsedMilliseconds >= timeout)
             {
                 firestore.sw.Stop();
                 //PersistenceTest.writeNewRebuild(StaticObject.myARmapID, "0", "timeout,>=20s",CommonVariables.GetTimestamp(System.DateTime.Now));
-                PersistenceTest.writeNewRebuild_simple(StaticObject.myARmapID, "0", "100000", CommonVariables.GetTimestamp(System.DateTime.Now),StaticObject.myARmapName,Auth.UserSelfId);
+                //PersistenceTest.writeNewRebuild_simple(StaticObject.myARmapID, "0", "100000", CommonVariables.GetTimestamp(System.DateTime.Now),StaticObject.myARmapName,Auth.UserSelfId);
                 firestore.sw.Reset();
                 firestore.FilesLoaded = 0;
+                StaticObject.debugger.text = "Failed to recoginize the scene, please retry";
             }
         }
            
@@ -72,7 +71,7 @@ public class PointCloudParticleExampleVersionDu : MonoBehaviour {
 	void Update () {
         if (frameUpdated) {
             if (m_PointCloudData != null && m_PointCloudData.Length > 0 && maxPointsToShow > 0) {
-                cloudPNumber.text = currentPS.particleCount.ToString();
+                //cloudPNumber.text = currentPS.particleCount.ToString();
                 CPNumber = currentPS.particleCount;
                 int numParticles = Mathf.Min (m_PointCloudData.Length, maxPointsToShow);
                 ParticleSystem.Particle[] particles = new ParticleSystem.Particle[numParticles];

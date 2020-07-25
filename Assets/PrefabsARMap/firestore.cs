@@ -126,150 +126,15 @@ public class firestore : MonoBehaviour {
         return myList;
     }
 
-//evaluate by viewpoint
-    public void onSave()
-    {
-        if (StaticObject.myARmapName == "Default")
-        {
-            StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
-            return;
-        }
-        /*
-        if (PointCloudParticleExampleVersionDu.CPNumber <= 150)
-        {
-            StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
-            return;
-        }
-        */
-        Vector3 pos = Camera.main.transform.position;
-        int viewPoint = 0;
-        WorldMapManager.session.GetCurrentWorldMapAsync(worldMap =>
-        {
-            foreach (Vector3 v in worldMap.pointCloud.Points)
-            {
-                Vector2 viewPos = Camera.main.WorldToViewportPoint(v); //viewport pos of point
-                Vector3 dir = (v - pos).normalized;
-                float dot = Vector3.Dot(Camera.main.transform.forward, dir);     //判断物体是否在相机前面
-                float dist = Vector3.Distance(pos, v);
-                if (dist <= 3 && dot > 0 && viewPos.x >= 0 && viewPos.x <= 1 && viewPos.y >= 0 && viewPos.y <= 1)
-                {
-                    viewPoint++;
-                }
-            }
-            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() + " view: " + viewPoint;
-            if (viewPoint <= 600)
-            {
-                StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
-                return;
-            }
-            worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
-            UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
-            print("begin serializing");
-            var worldMapInBytes = worldMap.SerializeToByteArray();
-            StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
-            GalleryController.onScreenshotMap();
-            //UploadCurrentWorldMap();
-            saveObject();
-            WriteARPoint2DB();
 
-
-        });
-
-
-    }
-
-    //evaluate by checking current frame
-    public void onSaveCF()
-    {
-        /*if (StaticObject.myARmapName =="Default")
-        {
-            //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
-            String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-            StaticObject.myARmapName = "CF >=" + CreteriaSetting.CurrentFrame_cre + " (" + timeStamp + ")";
-            //return;
-        }*/
-        
-       
-        float evalu = (float) PointCloudParticleExampleVersionDu.CPNumber/CreteriaSetting.CurrentFrame_cri;
-        ProgressBar.SetProgressValue(evalu);
-        if (PointCloudParticleExampleVersionDu.CPNumber <= CreteriaSetting.CurrentFrame_cri)
-        {
-            StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
-            return;
-        }
-        string timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-        StaticObject.myARmapName = StaticObject.myARmapName + "__CF >=" + CreteriaSetting.CurrentFrame_cri + " (" + timeStamp + ")";
-        WorldMapManager.session.GetCurrentWorldMapAsync (worldMap =>
-        {
-            worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
-            UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
-            print("begin serializing");
-            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString()+"CF: "+ PointCloudParticleExampleVersionDu.CPNumber.ToString();
-            var worldMapInBytes = worldMap.SerializeToByteArray();
-            StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
-            GalleryController.onScreenshotMap();
-            //UploadCurrentWorldMap();
-            saveObject();
-            WriteARPoint2DB();
-            PersistenceTest.writeNewTest(StaticObject.myARmapID, StaticObject.myARmapName, Auth.UserSelfId, "Current Frame", PointCloudParticleExampleVersionDu.CPNumber.ToString(), worldMap.pointCloud.Count.ToString(), "Null");
-            loadedMap = worldMap;
-        });
-
-
-    }
-
-    //evaluate by total number
-    public void onSaveTotal()
-    {/*
-        if (StaticObject.myARmapName == "Default")
-        {
-            //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
-            String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-            StaticObject.myARmapName = "To >="+CreteriaSetting.Total_cre+" ("+timeStamp+")";
-            //return;
-        }*/
-
-        WorldMapManager.session.GetCurrentWorldMapAsync(worldMap =>
-        {
-            print(worldMap.pointCloud.Count);
-            float evalu = (float) worldMap.pointCloud.Count / CreteriaSetting.Total_cri;
-            print(evalu);
-            ProgressBar.SetProgressValue(evalu);
-            if (worldMap.pointCloud.Count <= CreteriaSetting.Total_cri)
-            {
-                StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
-                return;
-            }
-            String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-            StaticObject.myARmapName =  StaticObject.myARmapName + "__To >=" + CreteriaSetting.Total_cri + " (" + timeStamp + ")";
-            worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
-            UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
-            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() + "CF: " + PointCloudParticleExampleVersionDu.CPNumber.ToString();
-            print("begin serializing");
-            var worldMapInBytes = worldMap.SerializeToByteArray();
-            StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
-            GalleryController.onScreenshotMap();
-            //UploadCurrentWorldMap();
-            saveObject();
-            WriteARPoint2DB();
-            PersistenceTest.writeNewTest(StaticObject.myARmapID, StaticObject.myARmapName, Auth.UserSelfId, "Total", PointCloudParticleExampleVersionDu.CPNumber.ToString(), worldMap.pointCloud.Count.ToString(), "Null");
-            loadedMap = worldMap;
-
-        
-        });
-
-    }
     //evaluate by checking plane 
     public void onSavePlane()
     {
-        /* comment for research test
         if (StaticObject.myARmapName == "Default")
         {
-            //StaticObject.debugger.text = "Current ARMap doesn't have a name please click button 'new' to create one";
-            String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-            StaticObject.myARmapName = "We >= "+CreteriaSetting.Weighted_cre+"("+timeStamp+")";
-            //return;
-        }*/
+            StaticObject.debugger.text = "Please create a new map with a different name than Default";
+            return;
+        }
         //get two viewport point on top & buttom of screen 
         var screenPosition_buttom = Camera.main.ScreenToViewportPoint(new Vector3(Screen.width / 2.0f, Screen.height / 4.0f, 100.0f));
         var screenPosition_top = Camera.main.ScreenToViewportPoint(new Vector3(Screen.width / 2.0f, 3*Screen.height / 4.0f, 100.0f));
@@ -303,9 +168,9 @@ public class firestore : MonoBehaviour {
                 Vector3 dir = (v - pos).normalized;
                 float dot = Vector3.Dot(Camera.main.transform.forward, dir);     //判断物体是否在相机前面
                 float dist = Vector3.Distance(pos, v);
-                if (dist <= 3 && dot > 0 && viewPos.x >= 0 && viewPos.x <= 1 && viewPos.y >= 0 && viewPos.y <= 1)
+                if (dist <= 1.8 && dot > 0 && viewPos.x >= 0 && viewPos.x <= 1 && viewPos.y >= 0 && viewPos.y <= 1)
                 {
-                    viewPoint+=0.3f;
+                    viewPoint+=0.2f;
                     if (StaticObject.IsOnPlane(v,p1)||StaticObject.IsOnPlane(v,p2)|| StaticObject.IsOnPlane(v, p3))//check if point in view port is also on detected plane in view port
                     {
                         viewPoint+=1f;
@@ -314,16 +179,16 @@ public class firestore : MonoBehaviour {
                 }
                 viewPoint =(float) Math.Round(viewPoint, 0);
             }
-            GameObject.Find("CPTotal").GetComponent<Text>().text = "total: " + worldMap.pointCloud.Count.ToString() + " Plane: " + viewPoint+  "CF: " + PointCloudParticleExampleVersionDu.CPNumber.ToString();
-            float evalu = viewPoint/ CreteriaSetting.Weighted_cri;
+            GameObject.Find("PointsNumber").GetComponent<Text>().text =viewPoint.ToString();
+            float evalu = viewPoint/ StaticObject.Weighted_cri;
             ProgressBar.SetProgressValue(evalu);
-            if (viewPoint <= CreteriaSetting.Weighted_cri)
+            if (viewPoint <= StaticObject.Weighted_cri)
             {
                 StaticObject.debugger.text = "Current scene is not able to be rebuilt, please retry";
                 return;
             }
             String timeStamp = CommonVariables.GetTimestamp(DateTime.Now);
-            StaticObject.myARmapName =StaticObject.myARmapName + "__We >= " + CreteriaSetting.Weighted_cri + "(" + timeStamp + ")";
+            //StaticObject.myARmapName =StaticObject.myARmapName + "__We >= " + StaticObject.Weighted_cri + "(" + timeStamp + ")";
             worldMap.Save(Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             UnityEngine.Debug.LogFormat("Online ARWorldMap saved to {0}", Path.Combine(Application.persistentDataPath, StaticObject.myARmapID));
             print("begin serializing");
@@ -331,7 +196,7 @@ public class firestore : MonoBehaviour {
             StartCoroutine(WriteFile(worldMapInBytes, StaticObject.myARmapID + "/WorldData"));
             GalleryController.onScreenshotMap();
             saveObject();
-            PersistenceTest.writeNewTest(StaticObject.myARmapID, StaticObject.myARmapName, Auth.UserSelfId, "Weighted", PointCloudParticleExampleVersionDu.CPNumber.ToString(), worldMap.pointCloud.Count.ToString(),viewPoint.ToString());
+            //PersistenceTest.writeNewTest(StaticObject.myARmapID, StaticObject.myARmapName, Auth.UserSelfId, "Weighted", PointCloudParticleExampleVersionDu.CPNumber.ToString(), worldMap.pointCloud.Count.ToString(),viewPoint.ToString());
             WriteARPoint2DB();
             loadedMap = worldMap;
 
@@ -391,7 +256,9 @@ public class firestore : MonoBehaviour {
                       }
                   }
                   
-              });
+              },System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext()
+              )
+        ;
         yield return new WaitForEndOfFrame();
     }
 
@@ -452,7 +319,8 @@ public class firestore : MonoBehaviour {
                 if (!StaticObject.listOfFiles.Contains(Mypath))
                     StaticObject.listOfFiles.Add(Mypath);
             }
-        });
+        },
+        System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
         yield return new WaitForEndOfFrame();
     }
     /*
@@ -577,11 +445,14 @@ public class firestore : MonoBehaviour {
 
                
             }
-        });
+        },
+        System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext()
+        );
 
 
     }
-
+    //View could point in ARMAP
+    /*
     public void ViewCloud()
     {
         if (view)
@@ -613,7 +484,7 @@ public class firestore : MonoBehaviour {
             view = !view;
         }
    
-    }
+    }*/
 
     public IEnumerator LoadWorldMap(byte[] worldMapInBytes)
     {
@@ -711,43 +582,44 @@ public class firestore : MonoBehaviour {
 
         //start rebuild after arworldmap is tracked succesful
         yield return new WaitUntil(StaticObject.ARWorldMapTracked);
-
+        GameObject.Find("PhotoView").GetComponent<CanvasGroup>().alpha = 0;
         print("reInstantiateGo start PrecisARList count="+dict.Count);
         PrecisARList = new List<GameObject>(dict.Count);
         foreach (KeyValuePair<List<float>, List<string>> Go in dict)
         {
-            GameObject m_InfoPanel;
+            GameObject VirtualGO;
             switch (Go.Value[0])
             {
                 case "InfoPanelOut":
-                    m_InfoPanel = Instantiate(Prefab, new Vector3(Go.Key[0], Go.Key[1], Go.Key[2]), new Quaternion(Go.Key[3], Go.Key[4], Go.Key[5], Go.Key[6]));
+                    VirtualGO = Instantiate(Prefab, new Vector3(Go.Key[0], Go.Key[1], Go.Key[2]), new Quaternion(Go.Key[3], Go.Key[4], Go.Key[5], Go.Key[6]));
                     print("Start loading image of panel");
-                    StartCoroutine(LoadImage(Go.Value[3] + ".jpg", m_InfoPanel));
-                    m_InfoPanel.transform.GetChild(0).GetChild(1).GetComponentInChildren<Text>().text = Go.Value[1];
+                    StartCoroutine(LoadImage(Go.Value[3] + ".jpg", VirtualGO));
+                    VirtualGO.transform.GetChild(0).GetChild(1).GetComponentInChildren<Text>().text = Go.Value[1];
                     print("Title="+Go.Value[1]);
-                    m_InfoPanel.transform.GetChild(0).GetChild(2).GetComponentInChildren<Text>().text = Go.Value[2];
+                    VirtualGO.transform.GetChild(0).GetChild(2).GetComponentInChildren<Text>().text = Go.Value[2];
                     print("Contents=" + Go.Value[2]);
                     break;
 
                 case "InfoPanelNoImage":
-                    m_InfoPanel = Instantiate(PrefabNoImage, new Vector3(Go.Key[0], Go.Key[1], Go.Key[2]), new Quaternion(Go.Key[3], Go.Key[4], Go.Key[5], Go.Key[6]));
-                    m_InfoPanel.transform.GetChild(0).GetChild(1).GetComponentInChildren<Text>().text = Go.Value[1];
-                    m_InfoPanel.transform.GetChild(0).GetChild(2).GetComponentInChildren<Text>().text = Go.Value[2];
+                    VirtualGO = Instantiate(PrefabNoImage, new Vector3(Go.Key[0], Go.Key[1], Go.Key[2]), new Quaternion(Go.Key[3], Go.Key[4], Go.Key[5], Go.Key[6]));
+                    VirtualGO.transform.GetChild(0).GetChild(1).GetComponentInChildren<Text>().text = Go.Value[1];
+                    VirtualGO.transform.GetChild(0).GetChild(2).GetComponentInChildren<Text>().text = Go.Value[2];
                     break;
                 default:
                     GameObject SimplePrefab = Resources.Load<GameObject>(Go.Value[0]);
                     print("find"+ SimplePrefab.name);
-                    m_InfoPanel = Instantiate(SimplePrefab, new Vector3(Go.Key[0], Go.Key[1], Go.Key[2]), new Quaternion(Go.Key[3], Go.Key[4], Go.Key[5], Go.Key[6]));
-                    m_InfoPanel.transform.localScale =StaticObject.StringToVector3(Go.Value[7]);
+                    VirtualGO = Instantiate(SimplePrefab, new Vector3(Go.Key[0], Go.Key[1], Go.Key[2]), new Quaternion(Go.Key[3], Go.Key[4], Go.Key[5], Go.Key[6]));
+                    VirtualGO.transform.localScale =StaticObject.StringToVector3(Go.Value[7]);
                     break;
 
             }
             print("Instantiated at position "+ new Vector3(Go.Key[0], Go.Key[1], Go.Key[2]).ToString()+" with lindex: "+Go.Value[6]);
-            StaticObject.SetLayerRecursively(m_InfoPanel,15);
-            m_InfoPanel.name = Go.Value[3];
-            //PrecisARList.Add(m_InfoPanel);
-            PrecisARList.Insert(Int32.Parse(Go.Value[6]),m_InfoPanel);
-            print("reinstantiate "+m_InfoPanel.name);
+            StaticObject.SetLayerRecursively(VirtualGO,15);
+            VirtualGO.name = Go.Value[3];
+            VirtualGO.tag = "VirtualObject";
+            //PrecisARList.Add(VirtualGO);
+            PrecisARList.Insert(Int32.Parse(Go.Value[6]),VirtualGO);
+            print("reinstantiate "+VirtualGO.name);
         }
         PrecisARList.Reverse();
 
@@ -800,7 +672,8 @@ public class firestore : MonoBehaviour {
                         UnityEngine.Debug.Log(task.Exception.ToString());
                         StaticObject.debugger.text = "File deleted fail";
                     }
-                });
+                },
+                System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
         StaticObject.Bunkyou_ref.Child(StaticObject.myARmapID + "/FileList").DeleteAsync().ContinueWith(task => {
@@ -815,7 +688,7 @@ public class firestore : MonoBehaviour {
                 UnityEngine.Debug.Log(task.Exception.ToString());
                 StaticObject.debugger.text = "File deleted fail";
             }
-        });
+        }, System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
         foreach (KeyValuePair<List<float>, List<string>> Go in StaticObject.addedGO)
         {
             StaticObject.Bunkyou_ref.Child("Images/"+Go.Value[3]+"jpg").DeleteAsync().ContinueWith(task => {
@@ -830,7 +703,8 @@ public class firestore : MonoBehaviour {
                     UnityEngine.Debug.Log(task.Exception.ToString());
                     StaticObject.debugger.text = "File deleted fail";
                 }
-            });
+            },
+            System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
         }
 
 

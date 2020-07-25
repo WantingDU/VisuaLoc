@@ -25,6 +25,9 @@ public class StaticObject : MonoBehaviour
     public static bool startCliked;
     public static bool AddClicked;
     public static bool isTracked;
+
+    public static int Weighted_cri = 200;
+
     private void OnDestroy()
     {
         StaticObject.AddClicked = false;

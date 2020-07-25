@@ -9,6 +9,7 @@ public class SaveDeleteButtonController : MonoBehaviour
         StaticObject.AddClicked = false;
 		AddGameObject.alreadyAdd = false;
 		GameObject g = Instantiate(Resources.Load<GameObject>(gameObject.name + "Simple"), transform.position, transform.rotation);
+        g.tag = "VirtualObject";
         g.transform.localScale = transform.localScale;
 		string g_GUID = StaticObject.getGUID();
         firestore.PrecisARList.Add(g);  //firestore.PrecisARList.Insert(StaticObject.currentOrder, g);

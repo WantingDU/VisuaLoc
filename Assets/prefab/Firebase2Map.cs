@@ -501,7 +501,7 @@ public class Firebase2Map : MonoBehaviour
                 
                 DataSnapshot snapshot = task.Result;
                 if (snapshot.ChildrenCount==0) {
-                    output.text = "ID is invalid, please check again";
+                    output.text = "ID is invalid, please check aFgain";
                     return;
                 }
                 output.text = "ARMap found, now loading...";

@@ -15,6 +15,7 @@ TagManager:
   - Target
   - TargetName
   - LoadingButton
+  - VirtualObject
   layers:
   - Default
   - TransparentFX
