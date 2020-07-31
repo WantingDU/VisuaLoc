@@ -61,6 +61,10 @@ public class GalleryController : MonoBehaviour
     private static IEnumerator TakeScreenshot()
     {
         int i = 0;
+        
+        CanvasGroup SaveWindowCG= GameObject.Find("SaveWindow").GetComponent<CanvasGroup>();
+        SaveWindowCG.alpha = 0;
+        SaveWindowCG.blocksRaycasts = false;
         UICG.alpha = 0;
         UICG.blocksRaycasts = false;
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("VirtualObject")){
@@ -82,6 +86,8 @@ public class GalleryController : MonoBehaviour
         Destroy(ss);
         UICG.alpha = 1;
         UICG.blocksRaycasts = true;
+        SaveWindowCG.alpha = 1;
+        SaveWindowCG.blocksRaycasts = true;
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("VirtualObject"))
         {
             MoveToLayer(g.transform,"Default");

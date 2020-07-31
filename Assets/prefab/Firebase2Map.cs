@@ -23,7 +23,7 @@ public class Firebase2Map : MonoBehaviour
     public static DatabaseReference placesRef;
     public static DatabaseReference MapPointsRef;
     public  List<GameObject> placesExist = new List<GameObject>();
-    public  Dictionary<GameObject,MyPoint> myPointExist = new Dictionary<GameObject,MyPoint>();
+    public  static Dictionary<GameObject,MyPoint> myPointExist = new Dictionary<GameObject,MyPoint>();
     public List<GameObject> MapExist = new List<GameObject>();
     public static Dictionary<string,string> DictOfARMap; 
     public Dictionary<GameObject, MyMapPoint> myMapExist = new Dictionary<GameObject, MyMapPoint>();
@@ -32,6 +32,7 @@ public class Firebase2Map : MonoBehaviour
 
     private void OnDestroy()
     {
+        myPointExist.Clear();
         MapPointsRef.ChildAdded -= HandleChildAdded2;
         MapPointsRef.ChildChanged -= HandleChildChanged2;
         MapPointsRef.ChildRemoved -= HandleChildRemoved2;
@@ -93,6 +94,7 @@ public class Firebase2Map : MonoBehaviour
                     string mapID = myMapExist[hit.transform.root.gameObject].guid;
                     StaticObject.myARmapID = mapID;
                     StaticObject.myARmapName = myMapExist[hit.transform.root.gameObject].placeName;
+                    
                     //StaticCoroutine.DoCoroutine(EventScript.Go2ARTask());
                     LoadingBehaviour.Show();
                     LoadingBehaviour.Description.text = StaticObject.myARmapName;
@@ -154,7 +156,7 @@ public class Firebase2Map : MonoBehaviour
                 string placeName = args.Snapshot.Child("title").Value.ToString();
                 float z = float.Parse(args.Snapshot.Child("coordinate").Child("z").Value.ToString(), CultureInfo.InvariantCulture.NumberFormat);
                 Vector2d position_point = new Vector2d(z, x);
-                MyPoint my_point = new MyPoint(guid, position_point);
+                MyPoint my_point = new MyPoint(guid,placeName, position_point);
                 GameObject point;
                 if (!UserID.Equals(Auth.UserSelfId))
                 {
@@ -270,13 +272,14 @@ public class Firebase2Map : MonoBehaviour
                 if (YisInRange && (isPublicBool || UserID.Equals(Auth.UserSelfId)))
                 {
                     string guid = args.Snapshot.Child("guid").Value.ToString();
+                    string date = args.Snapshot.Child("lastUpdateTime").Value.ToString();
                     if (GameObject.Find(guid) == null)
                     {
                         string placeName = args.Snapshot.Child("placeName").Value.ToString();
                         float x = float.Parse(args.Snapshot.Child("coordinate").Child("x").Value.ToString(), CultureInfo.InvariantCulture.NumberFormat);
 
                         Vector2d position_point = new Vector2d(x, y);
-                        MyMapPoint my_point = new MyMapPoint(guid, placeName, position_point, Auth.UserSelfId, isPublicBool);
+                        MyMapPoint my_point = new MyMapPoint(guid, placeName, position_point, Auth.UserSelfId, isPublicBool, date);
 
                         GameObject point;
                         if (!UserID.Equals(Auth.UserSelfId))
@@ -403,11 +406,11 @@ public class Firebase2Map : MonoBehaviour
                         if (XisInRange && (IsPublic.Equals("True") || UserID.Equals(Auth.UserSelfId)))
                         {
                             string guid = panel.Child("guid").Value.ToString();
-                            string placeName1 = panel.Child("title").Value.ToString();
+                            string placeName = panel.Child("title").Value.ToString();
                             float z = float.Parse(panel.Child("coordinate").Child("z").Value.ToString(), CultureInfo.InvariantCulture.NumberFormat);
                            
                             Vector2d position_point = new Vector2d(z, x);
-                            MyPoint my_point = new MyPoint(guid, position_point);
+                            MyPoint my_point = new MyPoint(guid,placeName, position_point);
                             if (GameObject.Find(guid) == null)
                             {
                                 GameObject point;
@@ -451,10 +454,11 @@ public class Firebase2Map : MonoBehaviour
                         if (YisInRange &&( isPublicBool || UserID.Equals(Auth.UserSelfId)))
                         {
                             string guid = panel.Child("guid").Value.ToString();
+                            string date = panel.Child("lastUpdateTime").Value.ToString();
                             string placeName1 = snapshot.Child(panel.Key).Child("placeName").Value.ToString();
                             float x = float.Parse(snapshot.Child(panel.Key).Child("coordinate").Child("x").Value.ToString(), CultureInfo.InvariantCulture.NumberFormat);
                             Vector2d position_point = new Vector2d(x, y);
-                            MyMapPoint my_point = new MyMapPoint(guid, placeName1, position_point, Auth.UserSelfId, isPublicBool);
+                            MyMapPoint my_point = new MyMapPoint(guid, placeName1, position_point, Auth.UserSelfId, isPublicBool,date);
                             GameObject point;
                             if (!UserID.Equals(Auth.UserSelfId))
                             {
@@ -510,10 +514,11 @@ public class Firebase2Map : MonoBehaviour
                 string UserID = snapshot.Child("UserID").Value.ToString();
                 string guid = snapshot.Child("guid").Value.ToString();
                 string placeName1 = snapshot.Child("placeName").Value.ToString();
+                string date = snapshot.Child("lastUpdateTime").Value.ToString();
                 float x = float.Parse(snapshot.Child("coordinate").Child("x").Value.ToString(), CultureInfo.InvariantCulture.NumberFormat);
 
                 Vector2d position_point = new Vector2d(x, y);
-                MyMapPoint my_point = new MyMapPoint(guid, placeName1, position_point, Auth.UserSelfId, IsPublic.Equals("True"));
+                MyMapPoint my_point = new MyMapPoint(guid, placeName1, position_point, Auth.UserSelfId, IsPublic.Equals("True"), date);
                 GameObject point = Instantiate(PrivateARMapPoint, map.GeoToWorldPosition(position_point), transform.rotation);
 
                 point.GetComponentInChildren<Text>().text = placeName1;

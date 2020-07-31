@@ -48,9 +48,9 @@ public static void writeNewPlace2(string guID, string title, string contents, Ve
         CommonVariables.reference.Child("places").Child(guID).SetRawJsonValueAsync(json);
         
     }
-    public static void writeNewARMap(string guid, string title, Vector2d coordi,bool IsPublic,string UserID)
+    public static void writeNewARMap(string guid, string title, Vector2d coordi,bool IsPublic,string UserID,string lastDate)
     {
-        MyMapPoint new_ARMapPoint = new MyMapPoint(guid, title, coordi, UserID, IsPublic);
+        MyMapPoint new_ARMapPoint = new MyMapPoint(guid, title, coordi, UserID, IsPublic,lastDate);
         string json = JsonUtility.ToJson(new_ARMapPoint);
         CommonVariables.reference.Child("ARMap").Child(guid).SetRawJsonValueAsync(json);
 

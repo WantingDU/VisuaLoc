@@ -11,12 +11,14 @@ public class EventScript2 : MonoBehaviour
     CanvasGroup CG;
     public void Awake()
     {
+        CG = GameObject.Find("ToolBar").GetComponent<CanvasGroup>();
+        print("Get CG in Awake");
+        GameObject.Find("LoadWindow").GetComponentInChildren<Text>().text = "Would you like load this scene from local storage?";
         inputFieldPrefab = Resources.Load<GameObject>("MapNameInput");
-
     }
     public void Start()
     {
-        CG=GameObject.Find("ToolBar").GetComponent<CanvasGroup>();
+
         SetVisibleDeleteButton();
     }
     public void ClearAll()
@@ -41,7 +43,7 @@ public class EventScript2 : MonoBehaviour
     }
     public void DisplayTools()
     {
-        if (CG.alpha ==0)
+        if (CG.alpha == 0)
         {
 
             CG.alpha = 1;
@@ -68,6 +70,23 @@ public class EventScript2 : MonoBehaviour
     {
         SceneManager.LoadSceneAsync("MapView");
 
+    }
+    public static void getUpdateTime()
+    {
+        Database2AR.ARMapRef.Child(StaticObject.myARmapID).Child("lastUpdateTime").GetValueAsync().ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.Log("task.IsFaulted");
+                Debug.Log(task.Exception);
+                return;
+            }
+            else if (task.IsCompleted)
+            {
+                StaticObject.lastUpdateTime = task.Result.Value.ToString();
+                GameObject.Find("LoadWindow").GetComponentInChildren<Text>().text = "Would you like load this scene locally? (Last update: " + StaticObject.lastUpdateTime + " )";
+            }
+        });
     }
     void SetVisibleDeleteButton()
     {

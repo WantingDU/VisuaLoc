@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Storage;
@@ -25,7 +25,7 @@ public class StaticObject : MonoBehaviour
     public static bool startCliked;
     public static bool AddClicked;
     public static bool isTracked;
-
+    public static string lastUpdateTime;
     public static int Weighted_cri = 200;
 
     private void OnDestroy()
@@ -40,6 +40,8 @@ public class StaticObject : MonoBehaviour
         currentOrder = 0;
         isTracked = false;
         startCliked = false;
+        debugger.text = "";
+        lastUpdateTime = "";
     }
     public void Awake()
     {
@@ -49,7 +51,6 @@ public class StaticObject : MonoBehaviour
         StaticObject.ARWorldMap_ref = StaticObject.storage_ref.Child("ARWorldMap");
         StaticObject.Bunkyou_ref = StaticObject.storage_ref.Child("Bunkyou");
         StaticObject.debugger = GameObject.Find("Debugger").GetComponent<Text>();
-        debugger.text = "Debugger";
     }
     public static string getGUID()
     {
