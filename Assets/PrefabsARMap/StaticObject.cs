@@ -122,7 +122,7 @@ public class StaticObject : MonoBehaviour
     {
         if (Math.Abs(p1.z - planeCenter.z) < 0.01 || Math.Abs(p1.y - planeCenter.y) < 0.01)
         {
-            print("delta z="+(p1.z - planeCenter.z) + "delta y=" + (p1.y - planeCenter.y));
+            //print("delta z="+(p1.z - planeCenter.z) + "delta y=" + (p1.y - planeCenter.y));
             return true;
         }
         return false;

@@ -4,6 +4,8 @@ using UnityEngine;
 using Firebase.Auth;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
+using Firebase;
 
 public class Auth : MonoBehaviour
 {
@@ -32,21 +34,20 @@ public class Auth : MonoBehaviour
             if (task.IsCanceled)
             {
                 Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
-                output.text = "CreateUserWithEmailAndPasswordAsync was canceled.";
+                output.text = "Create user was canceled.";
                 return;
             }
             if (task.IsFaulted)
             {
-                Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                output.text = "CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception;
+                output.text = "Create user encountered an error : " + task.Exception.InnerException.InnerException.Message;
                 return;
             }
-
             FirebaseUser newUser = task.Result;
             Debug.LogFormat("Firebase user created successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
             output.text = "user created successfully";
-        });
+        },
+        System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
     }
     public void onSignInButtonClicked()
     {
@@ -55,6 +56,7 @@ public class Auth : MonoBehaviour
     private IEnumerator SignInAsync()
     {
         //for simplifying program debuggin
+        /*
         if (GameObject.Find("Email").GetComponent<InputField>().text.Length==0)
         {
             UserSelfId = "DefaultID";
@@ -68,8 +70,8 @@ public class Auth : MonoBehaviour
         }
         else
         {
+        */
             email = GameObject.Find("Email").GetComponent<InputField>().text;
-            print("email.Length"+email.Length);
             password = GameObject.Find("Password").GetComponent<InputField>().text;
             var signInTask = auth.SignInWithEmailAndPasswordAsync(email, password);
             yield return new WaitUntil(() => signInTask.IsCompleted);
@@ -94,12 +96,13 @@ public class Auth : MonoBehaviour
                 }
             }
         }
-        
+    //}
 
-    }
 
-        
 }
+
+
+
 
 
 

@@ -18,8 +18,8 @@ public class SaveDeleteButtonController : MonoBehaviour
 					 g.transform.rotation.x, g.transform.rotation.y, g.transform.rotation.z,g.transform.rotation.w };
 		StaticObject.addedGO.Add(myPosition, new List<string>() { gameObject.name + "Simple", null, null, g_GUID, Auth.UserSelfId, true.ToString(),StaticObject.currentOrder.ToString(),g.transform.localScale.ToString() });
         StaticObject.currentOrder++;
-        print(g.transform.localScale.ToString());
-        print("add to addedGO  "+ gameObject.name + "Simple");
+        //print(g.transform.localScale.ToString());
+        //print("add to addedGO  "+ gameObject.name + "Simple");
 		//StaticObject.addedGO.Add(myPosition, new List<string>() { InfoPanel2Instantiate.name, title, contents, g_GUID, Auth.UserSelfId, Ispublic.ToString() });
 		GameObject target = Instantiate(CompassController.radarPrefab, g.transform.position, Quaternion.identity);
 		target.tag = "Target";
@@ -29,7 +29,7 @@ public class SaveDeleteButtonController : MonoBehaviour
 		CompassController.borderList.Add(targetBorder);
 		targetBorder.tag = "Target";
 		targetBorder.name = g.name + "Border";
-		print("just destroyed!");
+		//print("just destroyed!");
 		Destroy(gameObject);
 	}
 	public void OnDelete()

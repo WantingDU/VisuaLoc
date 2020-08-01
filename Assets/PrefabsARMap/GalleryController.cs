@@ -71,7 +71,7 @@ public class GalleryController : MonoBehaviour
             MoveToLayer(g.transform, "Invisible");
             i++;
         }
-        print("Virtual Object: " + i);
+        //print("Virtual Object: " + i);
         yield return new WaitForEndOfFrame();
 
         Texture2D ss = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);

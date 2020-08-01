@@ -41,7 +41,7 @@ public class Firebase2Map : MonoBehaviour
     public void ChangeSearchRange()
     {
         SearchRange = FindObjectOfType<Slider>().value;
-        print("changed slider value=" + Firebase2Map.SearchRange);
+        //print("changed slider value=" + Firebase2Map.SearchRange);
         SceneManager.LoadSceneAsync("MapView");
     }
 
@@ -60,7 +60,7 @@ public class Firebase2Map : MonoBehaviour
         map = LocationProviderFactory.Instance.mapManager;
         placesRef = FirebaseDatabase.DefaultInstance.GetReference("places");
         MapPointsRef = FirebaseDatabase.DefaultInstance.GetReference("ARMap");
-        print("My UserId" + Auth.UserSelfId+"Search range="+SearchRange);
+        //print("My UserId" + Auth.UserSelfId+"Search range="+SearchRange);
         InstantiateFromDB();
         placesRef.OrderByChild("coordinate/z").StartAt(StaticThings.location.latitude - SearchRange).EndAt(StaticThings.location.latitude + SearchRange).ChildAdded += HandleChildAdded;
         //placesRef.ChildAdded += HandleChildAdded;
@@ -217,7 +217,7 @@ public class Firebase2Map : MonoBehaviour
                     changedObject.name = guid;
                     changedPoint.coordinate = position_point;
                     changedPoint.placeName = guid;
-                    print(changedObject.name.ToString() + "changed!");
+                    //print(changedObject.name.ToString() + "changed!");
                 }
 
             }
@@ -235,11 +235,11 @@ public class Firebase2Map : MonoBehaviour
             Debug.LogError(args.DatabaseError.Message);
             return;
         }
-        print("destroy a removed child");
+        //print("destroy a removed child");
         if (GameObject.Find(args.Snapshot.Child("guid").Value.ToString()) != null)
         {
             GameObject changedObject = GameObject.Find(args.Snapshot.Child("guid").Value.ToString());
-            print("args previous child name:" + args.PreviousChildName);
+            //print("args previous child name:" + args.PreviousChildName);
             Destroy(changedObject);
             myPointExist.Remove(key: changedObject);
             placesExist.Remove(changedObject);
@@ -351,7 +351,7 @@ public class Firebase2Map : MonoBehaviour
                     changedPoint.placeName = placeName;
                     changedPoint.guid = guid;
                     changedObject.GetComponentInChildren<Text>().text = placeName;
-                    print(changedObject.name.ToString() + "changed!");
+                    //print(changedObject.name.ToString() + "changed!");
                 }
             }
         },
@@ -368,11 +368,11 @@ public class Firebase2Map : MonoBehaviour
             Debug.LogError(args.DatabaseError.Message);
             return;
         }
-        print("destroy a removed child");
+        //print("destroy a removed child");
         if (GameObject.Find(args.Snapshot.Child("guid").Value.ToString()) != null)
         {
             GameObject changedObject = GameObject.Find(args.Snapshot.Child("guid").Value.ToString());
-            print("args previous child name:" + args.PreviousChildName);
+            //print("args previous child name:" + args.PreviousChildName);
 
             Destroy(changedObject);
             myMapExist.Remove(key: changedObject);

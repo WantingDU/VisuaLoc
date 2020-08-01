@@ -85,7 +85,7 @@ public class Database2AR : MonoBehaviour
         float EPSILON = 0.001f;
         if (System.Math.Abs(Firebase2Map.SearchRange - StaticObject.tempSearchRange) > EPSILON)
         {
-            print("SearchRange Changed!");
+            //print("SearchRange Changed!");
             foreach (GameObject p in PanelExist)
             {
                 Destroy(p);
@@ -204,7 +204,7 @@ public class Database2AR : MonoBehaviour
                 }
                 else if (task.IsCompleted)
                 {
-                    print("task.IsCompleted in instantiateDB");
+                    //print("task.IsCompleted in instantiateDB");
                     DataSnapshot snapshot = task.Result;
                     foreach (DataSnapshot panel in snapshot.Children)
                     {
@@ -241,7 +241,7 @@ public class Database2AR : MonoBehaviour
                             GPSdataScript.height = coordi1.y;
                             GPSdataScript.GPSInfo = true;
 
-                            //print("just added:" + PanelExist[i].name);
+                            ////print("just added:" + PanelExist[i].name);
                             i++;
                         }
                     }
@@ -281,7 +281,7 @@ public class Database2AR : MonoBehaviour
         if (GameObject.Find(args.Snapshot.Child("guid").Value.ToString()) != null)
         {
             GameObject changedObject = GameObject.Find(args.Snapshot.Child("guid").Value.ToString());
-            print("args previous child name:" + args.PreviousChildName);
+            //print("args previous child name:" + args.PreviousChildName);
 
             Destroy(changedObject);
             //myPointExist.Remove(key:changedObject);

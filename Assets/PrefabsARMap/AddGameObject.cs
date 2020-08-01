@@ -21,7 +21,6 @@ public class AddGameObject : MonoBehaviour
     {
         StaticObject.AddClicked = true;
         string ButtonnName = EventSystem.current.currentSelectedGameObject.name.Replace("Button", ""); // to replace the specific text with blank;
-        print(ButtonnName);
         Prefab2Instantiate = Resources.Load<GameObject>(ButtonnName);
     }
     void HitTest(ARPoint point)

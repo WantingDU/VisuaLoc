@@ -12,7 +12,7 @@ public class EventScript2 : MonoBehaviour
     public void Awake()
     {
         CG = GameObject.Find("ToolBar").GetComponent<CanvasGroup>();
-        print("Get CG in Awake");
+        //print("Get CG in Awake");
         GameObject.Find("LoadWindow").GetComponentInChildren<Text>().text = "Would you like load this scene from local storage?";
         inputFieldPrefab = Resources.Load<GameObject>("MapNameInput");
     }
@@ -90,8 +90,8 @@ public class EventScript2 : MonoBehaviour
     }
     void SetVisibleDeleteButton()
     {
-        print("ARMapID=>?？？"+ StaticObject.myARmapID);
-        print("UserId=>?"+Auth.UserSelfId);
+        //print("ARMapID=>?？？"+ StaticObject.myARmapID);
+        //print("UserId=>?"+Auth.UserSelfId);
         Database2AR.ARMapRef.Child(StaticObject.myARmapID).GetValueAsync().ContinueWith(task =>
         {
             if (task.IsFaulted)
@@ -107,7 +107,7 @@ public class EventScript2 : MonoBehaviour
             {
                 DataSnapshot snapshot = task.Result;
                 string ARMapHolderID = snapshot.Child("UserID").Value.ToString();
-                print("ARMapHolderID=" + ARMapHolderID);
+                //print("ARMapHolderID=" + ARMapHolderID);
                 if (ARMapHolderID != Auth.UserSelfId)
                 {
                     var canvasGroup = GameObject.Find("DeleteButton").GetComponent<CanvasGroup>();
@@ -132,7 +132,7 @@ public class EventScript2 : MonoBehaviour
     }
     public void onInputMapName()
     {
-        print("Clicked ok!");
+        //print("Clicked ok!");
         GameObject myInput = GameObject.Find("InputField");
         firestore.ScenePublic = GameObject.Find("SceneToggle").GetComponent<Toggle>().isOn;
         StaticObject.myARmapName = GameObject.Find("InputField").transform.GetChild(0).GetComponentInChildren<InputField>().text;
