@@ -29,6 +29,9 @@ Client-side application is developed with interactive 3D graphic authoring tool 
 - Xcode 
 - ARKit2 supported iOS devices (iPhone 6s and later, all iPad Pro models, iPad 5th generation and iPad 6th generation)
 
+## Quick start
+Please find all main scenario files in [Scenes](./Assets/PrefabsARMap/Scenes/).
+
 ## Construction
 We present the construction of VisuaLoc in two main parts: Client side application's User Interaction(UI) design and Server side database management.
 The Process of system is given in Figure 1.
